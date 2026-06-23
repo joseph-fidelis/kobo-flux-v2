@@ -11,54 +11,12 @@ import {
 import { Separator } from "@/components/ui/separator"
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { Bell, LogOut, User } from 'lucide-vue-next'
-import { useAuth } from '~/composables/auth/useAuth'
-import { useUserStore } from '~/stores/user'
 
 
 
 
-const { logout: handleSignOut } = useAuth()
-const { currentUser } = useUserStore()
 
-const notifications = [
-  {
-    id: '1',
-    title: 'Firearm Handover Request',
-    message: 'SP001 has requested firearm SN-2024-001 for duty assignment.',
-    read: false,
-    created_at: '2026-03-18 08:32',
-  },
-  {
-    id: '2',
-    title: 'Low Ammunition Alert',
-    message: '9mm Parabellum stock at Main Armoury is below minimum threshold (45 rounds remaining).',
-    read: false,
-    created_at: '2026-03-18 07:15',
-  },
-  {
-    id: '3',
-    title: 'Firearm Return Confirmed',
-    message: 'SP003 has returned pistol SN-2024-007. Condition: Good.',
-    read: false,
-    created_at: '2026-03-17 22:10',
-  },
-  {
-    id: '4',
-    title: 'New User Created',
-    message: 'Security personnel account for J. Mwangi (SP006) has been created.',
-    read: true,
-    created_at: '2026-03-17 14:05',
-  },
-  {
-    id: '5',
-    title: 'Maintenance Overdue',
-    message: 'Rifle SN-2024-012 is overdue for scheduled maintenance since 2026-03-10.',
-    read: true,
-    created_at: '2026-03-17 09:00',
-  },
-]
-
-const unread = notifications.filter(n => !n.read).length
+// const unread = notifications.filter(n => !n.read).length
 
 </script>
 
@@ -84,7 +42,7 @@ const unread = notifications.filter(n => !n.read).length
 
           <!-- Notification bell -->
           <DropdownMenu @update:open="open => open">
-            <DropdownMenuTrigger as-child>
+            <!-- <DropdownMenuTrigger as-child>
               <button class="relative flex items-center justify-center w-9 h-9 rounded-xl bg-card border border-border text-muted-foreground hover:text-foreground hover:border-slate-600 transition-all cursor-pointer">
                 <Bell :size="15" />
                 <span
@@ -94,7 +52,7 @@ const unread = notifications.filter(n => !n.read).length
                   {{ unread > 99 ? '99+' : unread }}
                 </span>
               </button>
-            </DropdownMenuTrigger>
+            </DropdownMenuTrigger> -->
             <DropdownMenuContent
               align="end"
               class="w-80 bg-card border-border p-0 overflow-hidden"
@@ -102,7 +60,7 @@ const unread = notifications.filter(n => !n.read).length
               <DropdownMenuLabel class="px-4 py-3 text-[13px] font-semibold text-foreground border-b border-border">
                 Notifications
               </DropdownMenuLabel>
-              <div class="max-h-80 overflow-y-auto">
+              <!-- <div class="max-h-80 overflow-y-auto">
                 <template v-if="notifications.length">
                   <DropdownMenuItem
                     v-for="n in notifications"
@@ -121,12 +79,12 @@ const unread = notifications.filter(n => !n.read).length
                 <div v-else class="px-4 py-6 text-center text-[13px] text-muted-foreground">
                   No notifications
                 </div>
-              </div>
+              </div> -->
             </DropdownMenuContent>
           </DropdownMenu>
 
           <!-- User pill -->
-          <div class="flex items-center gap-2.5 bg-card border border-border rounded-xl px-3 py-2">
+          <!-- <div class="flex items-center gap-2.5 bg-card border border-border rounded-xl px-3 py-2">
             <div class="w-7 h-7 rounded-full bg-blue-600/30 border border-blue-500/40 flex items-center justify-center shrink-0">
               <User :size="14" class="text-blue-400" />
             </div>
@@ -134,16 +92,16 @@ const unread = notifications.filter(n => !n.read).length
               <span class="text-[14px] font-semibold text-foreground mb-2 leading-none">{{ currentUser?.username }}</span>
               <span class="text-[10.5px] text-muted-foreground leading-none">{{ currentUser?.role.name }}</span>
             </div>
-          </div>
+          </div> -->
 
           <!-- Sign out button -->
-          <button
+          <!-- <button
             class="flex items-center gap-2 bg-transparent text-muted-foreground hover:text-foreground hover:border-slate-600 hover:bg-card rounded-xl px-3 py-2 text-[13px] font-medium cursor-pointer transition-all whitespace-nowrap"
             @click="handleSignOut"
           >
             <LogOut :size="14" />
             Sign Out
-          </button>
+          </button> -->
         </div>
 
       </header>

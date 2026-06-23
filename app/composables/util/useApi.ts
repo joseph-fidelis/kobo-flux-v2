@@ -17,7 +17,7 @@
  *   const { data, pending, error, refresh } = api.useFetch<User[]>("/users")
  */
 
-import { useCookie, useRuntimeConfig } from "#app";
+import { useRuntimeConfig } from "#app";
 import type { UseFetchOptions } from "nuxt/app";
 import type { FetchError } from "ofetch";
 
@@ -38,61 +38,15 @@ interface RequestOptions {
 
 export function useApi() {
   const config = useRuntimeConfig();
-  const rawBase = (config.public.apiBase as string) || "http://localhost:5000";
-  // Ensure the URL is absolute so $fetch never treats it as a relative path
-  const baseURL = /^https?:\/\//i.test(rawBase) ? rawBase : `http://${rawBase}`;
-  const token = useCookie<string | null>("access_token", {
-    sameSite: "strict",
-    secure: import.meta.env.PROD,
-  });
-  const refreshToken = useCookie<string | null>("refresh_token", {
-    sameSite: "strict",
-    secure: import.meta.env.PROD,
-  });
-
-  // Prevent multiple simultaneous refresh calls
-  let refreshPromise: Promise<void> | null = null;
-  async function attemptRefresh(): Promise<void> {
-    if (refreshPromise) return refreshPromise; // queue concurrent calls behind the same refresh
-
-    refreshPromise = (async () => {
-      try {
-        const data = await $fetch<{
-          access_token: string;
-          refresh_token: string;
-        }>("/api/v1/auth/refresh", {
-          baseURL,
-          method: "POST",
-          body: { refresh_token: refreshToken.value },
-        });
-        token.value = data.access_token;
-        refreshToken.value = data.refresh_token;
-      } catch {
-        // Refresh failed — force logout
-        token.value = null;
-        refreshToken.value = null;
-        await navigateTo("/auth/login");
-      } finally {
-        refreshPromise = null;
-      }
-    })();
-
-    return refreshPromise;
-  }
-  // ── Shared headers ──────────────────────────────────────────────────────────
+  /** Same-origin; Nitro proxy routes forward to Kobo server-side. */
+  const baseURL = (config.public.baseURL as string) || "";
 
   function buildHeaders(extra?: HeadersInit): Record<string, string> {
-    const headers: Record<string, string> = {
+    return {
       "Content-Type": "application/json",
       Accept: "application/json",
       ...(extra as Record<string, string>),
     };
-
-    if (token.value) {
-      headers["Authorization"] = `Bearer ${token.value}`;
-    }
-
-    return headers;
   }
 
   // ── Error normaliser ────────────────────────────────────────────────────────
@@ -118,31 +72,16 @@ export function useApi() {
     _retry = false, // guard against infinite retry loop
   ): Promise<T> {
     const { params, headers, body } = options;
-    const isFormData = body instanceof FormData;
 
     try {
       return await $fetch<T>(path, {
         baseURL,
         method,
-        headers: isFormData
-          ? {
-              Accept: "application/json",
-              ...(token.value
-                ? { Authorization: `Bearer ${token.value}` }
-                : {}),
-            }
-          : buildHeaders(headers),
+        headers:buildHeaders(headers),
         query: params,
         body: body ?? undefined,
       });
     } catch (err) {
-      const fetchErr = err as FetchError;
-
-      if (fetchErr.response?.status === 401 && !_retry) {
-        await attemptRefresh();
-        return request<T>(method, path, options, true); // retry once with new token
-      }
-
       normaliseError(err);
     }
   }

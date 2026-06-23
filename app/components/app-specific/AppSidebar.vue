@@ -5,20 +5,9 @@ const route = useRoute()
 import type { SidebarProps } from "@/components/ui/sidebar"
 import {
   LayoutDashboard,
-  MapPin,
-  ShieldCheck,
-  Package,
-  Lock,
   Users,
-  UserCog,
-  Key,
-  Building2,
-  ClipboardList,
-  CalendarDays,
-  TrendingUp,
-  TriangleAlert,
-  FileText,
-  Settings,
+  File,
+  FormIcon
 } from "lucide-vue-next"
 import {
   Sidebar,
@@ -29,7 +18,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarFooter,
   SidebarRail,
   SidebarSeparator,
 } from "@/components/ui/sidebar"
@@ -40,46 +28,20 @@ const { public: { appName } } = useRuntimeConfig()
 
 const navGroups = [
   {
-    label: "OVERVIEW",
-    items: [
-      { title: "Dashboard", url: "/admin/dashboard", icon: LayoutDashboard },
-    ],
-  },
-  {
     label: "MASTER DATA",
     items: [
-      { title: "Branches",          url: "/admin/branches",         icon: Building2 },
-      { title: "Use Locations",    url: "/admin/locations",        icon: MapPin },
-      { title: "Arms Register",    url: "/admin/arms-register",    icon: ShieldCheck },
-      { title: "Ammunition",       url: "/admin/ammunition",       icon: Package },
-      { title: "Security Devices", url: "/admin/security-devices", icon: Lock },
-      { title: "Users",            url: "/admin/users",            icon: Users },
-      { title: "Roles",            url: "/admin/roles",            icon: UserCog },
-      { title: "Permissions",      url: "/admin/permissions",      icon: Key },
-    ],
-  },
-  {
-    label: "OPERATIONS",
-    items: [
-      { title: "SP Deployment",    url: "/admin/deployment",          icon: CalendarDays },
-      { title: "Firearm Handover", url: "/admin/firearms-allocation", icon: ClipboardList },
-      { title: "Ammo Requests",    url: "/admin/requests",            icon: TrendingUp },
-      { title: "Occurrence Book",  url: "/admin/occurrence",          icon: TriangleAlert },
-    ],
-  },
-  {
-    label: "REPORTS",
-    items: [
-      { title: "All Reports", url: "/admin/reports", icon: FileText },
-    ],
-  },
-  {
-    label: "SYSTEM",
-    items: [
-      { title: "Settings", url: "/admin/settings", icon: Settings },
+      { title: "Dashboard", url: "/", icon: LayoutDashboard },
+      { title: "Forms", url: "/forms", icon: FormIcon },
+      { title: "Submissions", url: "/submissions", icon: File },
+      { title: "Users", url: "/users", icon: Users },
     ],
   },
 ]
+
+function isNavActive(url: string) {
+  if (url === "/") return route.path === "/"
+  return route.path === url || route.path.startsWith(`${url}/`)
+}
 </script>
 
 <template>
@@ -122,14 +84,14 @@ const navGroups = [
             <SidebarMenuItem v-for="item in group.items" :key="item.title">
               <SidebarMenuButton
                   as-child
-                  :class="route.path.startsWith(item.url) ? 'bg-[#2B7FFF1A]! text-blue-500'  : ''"
+                  :class="isNavActive(item.url) ? 'bg-[#2B7FFF1A]! text-blue-500' : ''"
                   class="p-0! h-auto! px-3 py-3 hover:bg-card! border-border"
                 >
                <NuxtLink
                   :to="item.url"
                   :class="[
                     'flex items-center gap-3 px-4 h-10 min-h-10 w-full rounded-sm no-underline hover:text-foreground',
-                    route.path.startsWith(item.url) ? 'text-blue-500' : 'text-muted-foreground'
+                    isNavActive(item.url) ? 'text-blue-500' : 'text-muted-foreground'
                   ]"
                 >
                   <component
@@ -148,7 +110,6 @@ const navGroups = [
           v-if="gi < navGroups.length - 1"
           class="bg-muted! mx-2! group-data-[collapsible=icon]/sidebar-wrapper:hidden"
         />
-
       </template>
     </SidebarContent>
 

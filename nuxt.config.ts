@@ -2,10 +2,13 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   runtimeConfig: {
+    /** Server-only — never exposed to the browser. */
+    koboApiToken: process.env.NUXT_KOBO_API_TOKEN ?? process.env.NUXT_PUBLIC_API_TOKEN ?? '',
+    koboBaseUrl: process.env.NUXT_KOBO_BASE_URL ?? 'https://kc.kobotoolbox.org',
     public: {
-      // In production, NUXT_PUBLIC_API_BASE must be set to the full backend URL (https://...)
-      apiBase: process.env.NUXT_PUBLIC_API_BASE ?? 'http://localhost:5000',
-      appName: process.env.APP_NAME ?? 'Sample App',
+      appName: process.env.NUXT_PUBLIC_APP_NAME ?? 'Sample App',
+      /** Leave empty — API calls go to same-origin Nitro proxy routes (/api/*, /me/*). */
+      baseURL: process.env.NUXT_PUBLIC_BASE_URL ?? '',
     },
   },
   vite: {
