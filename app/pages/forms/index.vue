@@ -24,8 +24,11 @@
         <TableHeader>
           <TableRow>
             <TableHead>Name</TableHead>
+            <TableHead>Owner</TableHead>
+            <TableHead>Type</TableHead>
             <TableHead>Status</TableHead>
-            <TableHead class="text-right">Submissions</TableHead>
+            <TableHead >Submissions</TableHead>
+            <TableHead>Created</TableHead>
             <TableHead>Last modified</TableHead>
             <TableHead class="w-12">
               <span class="sr-only">Actions</span>
@@ -36,26 +39,38 @@
           <template v-if="pending">
             <TableRow v-for="i in 5" :key="i">
               <TableCell><Skeleton class="h-4 w-48" /></TableCell>
+              <TableCell><Skeleton class="h-4 w-24" /></TableCell>
+              <TableCell><Skeleton class="h-4 w-16" /></TableCell>
               <TableCell><Skeleton class="h-5 w-20 rounded-full" /></TableCell>
               <TableCell><Skeleton class="ml-auto h-4 w-8" /></TableCell>
-              <TableCell><Skeleton class="h-4 w-32" /></TableCell>
+              <TableCell><Skeleton class="h-4 w-28" /></TableCell>
+              <TableCell><Skeleton class="h-4 w-28" /></TableCell>
               <TableCell><Skeleton class="h-8 w-8 rounded-md" /></TableCell>
             </TableRow>
           </template>
 
-          <TableEmpty v-else-if="forms.length === 0" :colspan="5">
+          <TableEmpty v-else-if="forms.length === 0" :colspan="8">
             No forms found on this account.
           </TableEmpty>
 
           <TableRow v-for="form in forms" v-else :key="form.uid">
             <TableCell class="font-medium">{{ form.name }}</TableCell>
+            <TableCell class="text-muted-foreground">
+              {{ formatOwner(form.owner, form) }}
+            </TableCell>
+            <TableCell class="uppercase text-muted-foreground">
+              {{ form.asset_type }}
+            </TableCell>
             <TableCell>
-              <Badge :variant="statusVariant(form.deployment_status)">
-                {{ formatStatus(form.deployment_status) }}
+              <Badge :variant="deploymentStatusVariant(form.deployment_status)">
+                {{ formatDeploymentStatus(form.deployment_status) }}
               </Badge>
             </TableCell>
-            <TableCell class="text-right tabular-nums">
+            <TableCell class="tabular-nums">
               {{ form.deployment__submission_count ?? 0 }}
+            </TableCell>
+            <TableCell class="text-muted-foreground">
+              {{ formatDate(form.date_created) }}
             </TableCell>
             <TableCell class="text-muted-foreground">
               {{ formatDate(form.date_modified) }}
@@ -106,69 +121,12 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import type { Asset, AssetDeploymentStatus } from '~/lib/models/ProjectsLibrary'
-import { useProjectsLibraryApi } from '~/services/project.service'
 import { FileText, Inbox, MoreVertical } from 'lucide-vue-next'
+import { useForms } from '~/composables/forms/useForms'
 
 definePageMeta({ layout: 'admin-layout' })
 
-const { getAssets } = useProjectsLibraryApi()
-
-const forms = ref<Asset[]>([])
-const pending = ref(true)
-const error = ref<string | null>(null)
-
-async function refresh() {
-  pending.value = true
-  error.value = null
-  try {
-    const response = await getAssets({
-      // q: 'asset_type:survey',
-      // ordering: '-date_modified',
-      current_user_permissions_only: true,
-      limit: 100,
-    })
-    forms.value = response.results
-  } catch (err: unknown) {
-    const apiErr = err as { message?: string }
-    error.value = apiErr.message ?? 'Failed to load forms'
-    forms.value = []
-  } finally {
-    pending.value = false
-  }
-}
-
-onMounted(refresh)
-
-function formatStatus(status?: AssetDeploymentStatus) {
-  if (!status) return 'Draft'
-  return status.charAt(0).toUpperCase() + status.slice(1)
-}
-
-function statusVariant(status?: AssetDeploymentStatus) {
-  switch (status) {
-    case 'deployed':
-      return 'default' as const
-    case 'archived':
-      return 'secondary' as const
-    default:
-      return 'outline' as const
-  }
-}
-
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  })
-}
-
-function viewDetails(uid: string) {
-  navigateTo(`/forms/${uid}`)
-}
-
-function viewSubmissions(uid: string) {
-  navigateTo({ path: '/submissions', query: { form: uid } })
-}
+const { forms, pending, error, refresh, viewDetails, viewSubmissions, formatOwner } = useForms()
+const { formatDate } = useFormatDate()
+const { formatDeploymentStatus, deploymentStatusVariant } = useAssetStatus()
 </script>

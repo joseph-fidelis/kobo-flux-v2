@@ -59,7 +59,10 @@ export const useFormContentApi = () => {
 
     /** Raw compiled XForm XML for this snapshot. */
     getAssetSnapshotXform: (snapshotUid: string) =>
-      api.get<string>(`${SNAPSHOT_BASE}/${snapshotUid}/xform/`),
+      api.get<string>(`${SNAPSHOT_BASE}/${snapshotUid}/xform/`, {
+        headers: { Accept: "*/*" },
+        responseType: "text",
+      }),
 
     /** XForm XML with a disclaimer banner injected (used for shared/public previews). */
     getAssetSnapshotXmlWithDisclaimer: (snapshotUid: string) =>
@@ -83,6 +86,16 @@ export const useFormContentApi = () => {
 
     /** Raw compiled XForm XML for the asset's current deployed version. */
     getAssetXform: (assetUid: string) =>
-      api.get<string>(`${ASSET_BASE}/${assetUid}/xform/`),
+      api.get<string>(`${ASSET_BASE}/${assetUid}/xform/`, {
+        headers: { Accept: "*/*" },
+        responseType: "text",
+      }),
+
+    /** XLSForm as an Excel (.xlsx) file download. */
+    getAssetXls: (assetUid: string) =>
+      api.get<Blob>(`${ASSET_BASE}/${assetUid}/xls/`, {
+        headers: { Accept: "*/*" },
+        responseType: "blob",
+      }),
   }
 }

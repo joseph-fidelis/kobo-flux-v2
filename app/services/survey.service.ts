@@ -70,6 +70,28 @@ export const useSubmissionApi = () => {
         },
       }),
 
+    /** Submission data as XML (use with limit/start to cap export size). */
+    getSubmissionsXml: (assetUid: string, params: Omit<SubmissionListParams, "format"> = {}) =>
+      api.get<string>(`${BASE}/${assetUid}/data/`, {
+        params: {
+          format: "xml",
+          ...(params.limit !== undefined && { limit: params.limit }),
+          ...(params.start !== undefined && { start: params.start }),
+          ...(params.offset !== undefined && { offset: params.offset }),
+          ...(params.fields?.trim() && { fields: params.fields }),
+          ...(params.query?.trim() && { query: params.query }),
+          ...(params.sort?.trim() && { sort: params.sort }),
+        },
+        headers: { Accept: "*/*" },
+        responseType: "text",
+      }),
+
+    downloadExportFile: (assetUid: string, exportUid: string) =>
+      api.get<Blob>(`${BASE}/${assetUid}/exports/${exportUid}/download`, {
+        headers: { Accept: "*/*" },
+        responseType: "blob",
+      }),
+
     getSubmission: (assetUid: string, id: string, params: SubmissionRetrieveParams = {}) =>
       api.get<SubmissionRecord>(`${BASE}/${assetUid}/data/${id}/`, {
         params: {

@@ -107,7 +107,7 @@
         "./tailwindcss/sources"
       ],
       "#app-manifest": [
-        "./manifest/meta/27d8b395-421d-4a45-a0e1-1db331a90dd0"
+        "./manifest/meta/447a7907-f428-41d1-830f-dcd3cbcc12df.json"
       ],
       "#build": [
         "."

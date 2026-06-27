@@ -78,6 +78,7 @@ export interface Asset {
   date_created: string
   date_modified: string
   owner: string // URI
+  owner__username?: string
   content?: Record<string, unknown>
   settings?: Record<string, unknown>
   deployment__active?: boolean

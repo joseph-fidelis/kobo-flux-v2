@@ -32,7 +32,7 @@ const navGroups = [
     items: [
       { title: "Dashboard", url: "/", icon: LayoutDashboard },
       { title: "Forms", url: "/forms", icon: FormIcon },
-      { title: "Submissions", url: "/submissions", icon: File },
+      // { title: "Submissions", url: "/submissions", icon: File },
       { title: "Users", url: "/users", icon: Users },
     ],
   },

@@ -32,6 +32,7 @@ export interface ApiError {
 interface RequestOptions {
   params?: QueryParams;
   headers?: HeadersInit;
+  responseType?: "json" | "blob" | "text";
 }
 
 // ─── Composable ───────────────────────────────────────────────────────────────
@@ -41,12 +42,18 @@ export function useApi() {
   /** Same-origin; Nitro proxy routes forward to Kobo server-side. */
   const baseURL = (config.public.baseURL as string) || "";
 
-  function buildHeaders(extra?: HeadersInit): Record<string, string> {
-    return {
-      "Content-Type": "application/json",
+  function buildHeaders(
+    extra?: HeadersInit,
+    method: string = "GET",
+  ): Record<string, string> {
+    const headers: Record<string, string> = {
       Accept: "application/json",
       ...(extra as Record<string, string>),
     };
+    if (method !== "GET" && method !== "HEAD") {
+      headers["Content-Type"] = "application/json";
+    }
+    return headers;
   }
 
   // ── Error normaliser ────────────────────────────────────────────────────────
@@ -71,16 +78,18 @@ export function useApi() {
     options: RequestOptions & { body?: unknown } = {},
     _retry = false, // guard against infinite retry loop
   ): Promise<T> {
-    const { params, headers, body } = options;
+    const { params, headers, body, responseType } = options;
 
     try {
-      return await $fetch<T>(path, {
+      const data = await $fetch(path, {
         baseURL,
         method,
-        headers:buildHeaders(headers),
+        headers: buildHeaders(headers, method),
         query: params,
         body: body ?? undefined,
+        ...(responseType && { responseType }),
       });
+      return data as T;
     } catch (err) {
       normaliseError(err);
     }
@@ -124,13 +133,14 @@ export function useApi() {
     path: string,
     options: UseFetchOptions<T> = {} as UseFetchOptions<T>,
   ) {
-    const { headers, ...rest } = options;
+    const { headers, method, ...rest } = options;
+    const fetchMethod = typeof method === "string" ? method : "GET";
 
     // @ts-expect-error Nuxt's useFetch types don't allow generic headers, but we know this works
     return useFetch<T>(path, {
       baseURL,
       ...rest,
-      headers: buildHeaders(headers as HeadersInit),
+      headers: buildHeaders(headers as HeadersInit, fetchMethod),
     });
   }
 

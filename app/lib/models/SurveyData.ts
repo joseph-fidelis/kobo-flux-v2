@@ -229,18 +229,19 @@ export interface KoboListParams {
   }
   
   export interface CreateExportPayload {
-    fields: string[]
+    fields?: string[]
     fields_from_all_versions: boolean
     group_sep: string
     hierarchy_in_labels: boolean
     include_media_url: boolean
     lang: string
     multiple_select: string
-    submissions_id: number[]
+    /** Kobo API field name for targeted submission exports. */
+    submission_ids?: number[]
     type: string
     flatten: boolean
     xls_types_as_text: boolean
-    query: Record<string, unknown>
+    query?: Record<string, unknown>
   }
   
   // ---------------------------------------------------------------------------

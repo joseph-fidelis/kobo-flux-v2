@@ -10,6 +10,10 @@ import { RuntimeConfig as UserRuntimeConfig, PublicRuntimeConfig as UserPublicRu
       cdnURL: string,
    },
 
+   koboApiToken: string,
+
+   koboBaseUrl: string,
+
    nitro: {
       envPrefix: string,
    },
@@ -19,9 +23,9 @@ import { RuntimeConfig as UserRuntimeConfig, PublicRuntimeConfig as UserPublicRu
    },
   }
   interface SharedPublicRuntimeConfig {
-   apiBase: string,
-
    appName: string,
+
+   baseURL: string,
 
    piniaPluginPersistedstate: any,
   }

@@ -15,53 +15,7 @@ type LazyComponent<T> = DefineComponent<HydrationStrategies, {}, {}, {}, {}, {},
 
 interface _GlobalComponents {
   AppSpecificAppSidebar: typeof import("../../app/components/app-specific/AppSidebar.vue")['default']
-  AppSpecificCanVue: typeof import("../../app/components/app-specific/Can.vue.vue")['default']
-  AppSpecificDragHandle: typeof import("../../app/components/app-specific/DragHandle.vue")['default']
-  AppSpecificDraggableRow: typeof import("../../app/components/app-specific/DraggableRow.vue")['default']
   AppSpecificNavUser: typeof import("../../app/components/app-specific/NavUser.vue")['default']
-  AppSpecificToastContainer: typeof import("../../app/components/app-specific/Toast/toastContainer.vue")['default']
-  AppSpecificComponentsAmmunitionTypesTab: typeof import("../../app/components/app-specific/components/AmmunitionTypesTab.vue")['default']
-  AppSpecificComponentsArmoryTab: typeof import("../../app/components/app-specific/components/ArmoryTab.vue")['default']
-  AppSpecificComponentsFirearmsTab: typeof import("../../app/components/app-specific/components/FirearmsTab.vue")['default']
-  AppSpecificComponentsPendingApprovalTab: typeof import("../../app/components/app-specific/components/PendingApprovalTab.vue")['default']
-  AppSpecificDialogsConfirmationDialog: typeof import("../../app/components/app-specific/dialogs/ConfirmationDialog.vue")['default']
-  AppSpecificDialogsTransferConfirmationDialog: typeof import("../../app/components/app-specific/dialogs/TransferConfirmationDialog.vue")['default']
-  AppSpecificDialogsAmmunitionAddAmmoInventory: typeof import("../../app/components/app-specific/dialogs/ammunition/AddAmmoInventory.vue")['default']
-  AppSpecificDialogsAmmunitionAdjustInventory: typeof import("../../app/components/app-specific/dialogs/ammunition/AdjustInventory.vue")['default']
-  AppSpecificDialogsAmmunitionDetails: typeof import("../../app/components/app-specific/dialogs/ammunition/AmmunitionDetails.vue")['default']
-  AppSpecificDialogsAmmunitionModal: typeof import("../../app/components/app-specific/dialogs/ammunition/AmmunitionModal.vue")['default']
-  AppSpecificDialogsAmmunitionTypeModal: typeof import("../../app/components/app-specific/dialogs/ammunition/AmmunitionTypeModal.vue")['default']
-  AppSpecificDialogsAmmunitionRegisterAmmoType: typeof import("../../app/components/app-specific/dialogs/ammunition/RegisterAmmoType.vue")['default']
-  AppSpecificDialogsArmsregisterCreateArmoryModal: typeof import("../../app/components/app-specific/dialogs/armsregister/CreateArmoryModal.vue")['default']
-  AppSpecificDialogsArmsregisterDisposeFireArm: typeof import("../../app/components/app-specific/dialogs/armsregister/DisposeFireArm.vue")['default']
-  AppSpecificDialogsArmsregisterFireArmsDetails: typeof import("../../app/components/app-specific/dialogs/armsregister/FireArmsDetails.vue")['default']
-  AppSpecificDialogsArmsregisterRecordFireArm: typeof import("../../app/components/app-specific/dialogs/armsregister/RecordFireArm.vue")['default']
-  AppSpecificDialogsArmsregisterRegisterFireArm: typeof import("../../app/components/app-specific/dialogs/armsregister/RegisterFireArm.vue")['default']
-  AppSpecificDialogsArmsregisterReviewFireArm: typeof import("../../app/components/app-specific/dialogs/armsregister/ReviewFireArm.vue")['default']
-  AppSpecificDialogsBranchModal: typeof import("../../app/components/app-specific/dialogs/BranchModal.vue")['default']
-  AppSpecificDialogsFirearmIssueFireArm: typeof import("../../app/components/app-specific/dialogs/firearm/IssueFireArm.vue")['default']
-  AppSpecificDialogsFirearmReturnFireArm: typeof import("../../app/components/app-specific/dialogs/firearm/ReturnFireArm.vue")['default']
-  AppSpecificDialogsLocationModal: typeof import("../../app/components/app-specific/dialogs/location/LocationModal.vue")['default']
-  AppSpecificDialogsRolesRoleModal: typeof import("../../app/components/app-specific/dialogs/roles/RoleModal.vue")['default']
-  AppSpecificDialogsSecuritydevicesDeviceDetails: typeof import("../../app/components/app-specific/dialogs/securitydevices/DeviceDetails.vue")['default']
-  AppSpecificDialogsSecuritydevicesDeviceInspection: typeof import("../../app/components/app-specific/dialogs/securitydevices/DeviceInspection.vue")['default']
-  AppSpecificDialogsSecuritydevicesSecurityDeviceModal: typeof import("../../app/components/app-specific/dialogs/securitydevices/SecurityDeviceModal.vue")['default']
-  AppSpecificDialogsUsersAddEdit: typeof import("../../app/components/app-specific/dialogs/users/AddEdit.vue")['default']
-  AppSpecificDialogsUsersInfoField: typeof import("../../app/components/app-specific/dialogs/users/InfoField.vue")['default']
-  AppSpecificDialogsUsersUserDetails: typeof import("../../app/components/app-specific/dialogs/users/UserDetails.vue")['default']
-  AppSpecificDialogsUsersUserModal: typeof import("../../app/components/app-specific/dialogs/users/UserModal.vue")['default']
-  AppSpecificFormsAllocationForm: typeof import("../../app/components/app-specific/forms/AllocationForm.vue")['default']
-  AppSpecificFormsAmmunitionForm: typeof import("../../app/components/app-specific/forms/AmmunitionForm.vue")['default']
-  AppSpecificFormsCreateIssuanceForm: typeof import("../../app/components/app-specific/forms/CreateIssuanceForm.vue")['default']
-  AppSpecificFormsFireArmForm: typeof import("../../app/components/app-specific/forms/FireArmForm.vue")['default']
-  AppSpecificFormsFirearmReturnDialog: typeof import("../../app/components/app-specific/forms/FirearmReturnDialog.vue")['default']
-  AppSpecificFormsLoginForm: typeof import("../../app/components/app-specific/forms/LoginForm.vue")['default']
-  AppSpecificFormsRoleForm: typeof import("../../app/components/app-specific/forms/RoleForm.vue")['default']
-  AppSpecificFormsSetupBranchForm: typeof import("../../app/components/app-specific/forms/SetupBranchForm.vue")['default']
-  AppSpecificFormsUserForm: typeof import("../../app/components/app-specific/forms/UserForm.vue")['default']
-  AppSpecificPartialPageAmmunitions: typeof import("../../app/components/app-specific/partial-page/ammunitions.vue")['default']
-  AppSpecificPartialPageFirearms: typeof import("../../app/components/app-specific/partial-page/firearms.vue")['default']
-  AppSpecificPartialPageKits: typeof import("../../app/components/app-specific/partial-page/kits.vue")['default']
   NuxtWelcome: typeof import("../../node_modules/.pnpm/nuxt@4.4.2_@babel+core@7.29.0_@babel+plugin-syntax-jsx@7.28.6_@babel+core@7.29.0__@parc_5a195fceced10ac9fea902dd8b70b305/node_modules/nuxt/dist/app/components/welcome.vue")['default']
   NuxtLayout: typeof import("../../node_modules/.pnpm/nuxt@4.4.2_@babel+core@7.29.0_@babel+plugin-syntax-jsx@7.28.6_@babel+core@7.29.0__@parc_5a195fceced10ac9fea902dd8b70b305/node_modules/nuxt/dist/app/components/nuxt-layout")['default']
   NuxtErrorBoundary: typeof import("../../node_modules/.pnpm/nuxt@4.4.2_@babel+core@7.29.0_@babel+plugin-syntax-jsx@7.28.6_@babel+core@7.29.0__@parc_5a195fceced10ac9fea902dd8b70b305/node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue")['default']
@@ -276,53 +230,7 @@ interface _GlobalComponents {
   Body: typeof import("../../node_modules/.pnpm/nuxt@4.4.2_@babel+core@7.29.0_@babel+plugin-syntax-jsx@7.28.6_@babel+core@7.29.0__@parc_5a195fceced10ac9fea902dd8b70b305/node_modules/nuxt/dist/head/runtime/components")['Body']
   NuxtIsland: typeof import("../../node_modules/.pnpm/nuxt@4.4.2_@babel+core@7.29.0_@babel+plugin-syntax-jsx@7.28.6_@babel+core@7.29.0__@parc_5a195fceced10ac9fea902dd8b70b305/node_modules/nuxt/dist/app/components/nuxt-island")['default']
   LazyAppSpecificAppSidebar: LazyComponent<typeof import("../../app/components/app-specific/AppSidebar.vue")['default']>
-  LazyAppSpecificCanVue: LazyComponent<typeof import("../../app/components/app-specific/Can.vue.vue")['default']>
-  LazyAppSpecificDragHandle: LazyComponent<typeof import("../../app/components/app-specific/DragHandle.vue")['default']>
-  LazyAppSpecificDraggableRow: LazyComponent<typeof import("../../app/components/app-specific/DraggableRow.vue")['default']>
   LazyAppSpecificNavUser: LazyComponent<typeof import("../../app/components/app-specific/NavUser.vue")['default']>
-  LazyAppSpecificToastContainer: LazyComponent<typeof import("../../app/components/app-specific/Toast/toastContainer.vue")['default']>
-  LazyAppSpecificComponentsAmmunitionTypesTab: LazyComponent<typeof import("../../app/components/app-specific/components/AmmunitionTypesTab.vue")['default']>
-  LazyAppSpecificComponentsArmoryTab: LazyComponent<typeof import("../../app/components/app-specific/components/ArmoryTab.vue")['default']>
-  LazyAppSpecificComponentsFirearmsTab: LazyComponent<typeof import("../../app/components/app-specific/components/FirearmsTab.vue")['default']>
-  LazyAppSpecificComponentsPendingApprovalTab: LazyComponent<typeof import("../../app/components/app-specific/components/PendingApprovalTab.vue")['default']>
-  LazyAppSpecificDialogsConfirmationDialog: LazyComponent<typeof import("../../app/components/app-specific/dialogs/ConfirmationDialog.vue")['default']>
-  LazyAppSpecificDialogsTransferConfirmationDialog: LazyComponent<typeof import("../../app/components/app-specific/dialogs/TransferConfirmationDialog.vue")['default']>
-  LazyAppSpecificDialogsAmmunitionAddAmmoInventory: LazyComponent<typeof import("../../app/components/app-specific/dialogs/ammunition/AddAmmoInventory.vue")['default']>
-  LazyAppSpecificDialogsAmmunitionAdjustInventory: LazyComponent<typeof import("../../app/components/app-specific/dialogs/ammunition/AdjustInventory.vue")['default']>
-  LazyAppSpecificDialogsAmmunitionDetails: LazyComponent<typeof import("../../app/components/app-specific/dialogs/ammunition/AmmunitionDetails.vue")['default']>
-  LazyAppSpecificDialogsAmmunitionModal: LazyComponent<typeof import("../../app/components/app-specific/dialogs/ammunition/AmmunitionModal.vue")['default']>
-  LazyAppSpecificDialogsAmmunitionTypeModal: LazyComponent<typeof import("../../app/components/app-specific/dialogs/ammunition/AmmunitionTypeModal.vue")['default']>
-  LazyAppSpecificDialogsAmmunitionRegisterAmmoType: LazyComponent<typeof import("../../app/components/app-specific/dialogs/ammunition/RegisterAmmoType.vue")['default']>
-  LazyAppSpecificDialogsArmsregisterCreateArmoryModal: LazyComponent<typeof import("../../app/components/app-specific/dialogs/armsregister/CreateArmoryModal.vue")['default']>
-  LazyAppSpecificDialogsArmsregisterDisposeFireArm: LazyComponent<typeof import("../../app/components/app-specific/dialogs/armsregister/DisposeFireArm.vue")['default']>
-  LazyAppSpecificDialogsArmsregisterFireArmsDetails: LazyComponent<typeof import("../../app/components/app-specific/dialogs/armsregister/FireArmsDetails.vue")['default']>
-  LazyAppSpecificDialogsArmsregisterRecordFireArm: LazyComponent<typeof import("../../app/components/app-specific/dialogs/armsregister/RecordFireArm.vue")['default']>
-  LazyAppSpecificDialogsArmsregisterRegisterFireArm: LazyComponent<typeof import("../../app/components/app-specific/dialogs/armsregister/RegisterFireArm.vue")['default']>
-  LazyAppSpecificDialogsArmsregisterReviewFireArm: LazyComponent<typeof import("../../app/components/app-specific/dialogs/armsregister/ReviewFireArm.vue")['default']>
-  LazyAppSpecificDialogsBranchModal: LazyComponent<typeof import("../../app/components/app-specific/dialogs/BranchModal.vue")['default']>
-  LazyAppSpecificDialogsFirearmIssueFireArm: LazyComponent<typeof import("../../app/components/app-specific/dialogs/firearm/IssueFireArm.vue")['default']>
-  LazyAppSpecificDialogsFirearmReturnFireArm: LazyComponent<typeof import("../../app/components/app-specific/dialogs/firearm/ReturnFireArm.vue")['default']>
-  LazyAppSpecificDialogsLocationModal: LazyComponent<typeof import("../../app/components/app-specific/dialogs/location/LocationModal.vue")['default']>
-  LazyAppSpecificDialogsRolesRoleModal: LazyComponent<typeof import("../../app/components/app-specific/dialogs/roles/RoleModal.vue")['default']>
-  LazyAppSpecificDialogsSecuritydevicesDeviceDetails: LazyComponent<typeof import("../../app/components/app-specific/dialogs/securitydevices/DeviceDetails.vue")['default']>
-  LazyAppSpecificDialogsSecuritydevicesDeviceInspection: LazyComponent<typeof import("../../app/components/app-specific/dialogs/securitydevices/DeviceInspection.vue")['default']>
-  LazyAppSpecificDialogsSecuritydevicesSecurityDeviceModal: LazyComponent<typeof import("../../app/components/app-specific/dialogs/securitydevices/SecurityDeviceModal.vue")['default']>
-  LazyAppSpecificDialogsUsersAddEdit: LazyComponent<typeof import("../../app/components/app-specific/dialogs/users/AddEdit.vue")['default']>
-  LazyAppSpecificDialogsUsersInfoField: LazyComponent<typeof import("../../app/components/app-specific/dialogs/users/InfoField.vue")['default']>
-  LazyAppSpecificDialogsUsersUserDetails: LazyComponent<typeof import("../../app/components/app-specific/dialogs/users/UserDetails.vue")['default']>
-  LazyAppSpecificDialogsUsersUserModal: LazyComponent<typeof import("../../app/components/app-specific/dialogs/users/UserModal.vue")['default']>
-  LazyAppSpecificFormsAllocationForm: LazyComponent<typeof import("../../app/components/app-specific/forms/AllocationForm.vue")['default']>
-  LazyAppSpecificFormsAmmunitionForm: LazyComponent<typeof import("../../app/components/app-specific/forms/AmmunitionForm.vue")['default']>
-  LazyAppSpecificFormsCreateIssuanceForm: LazyComponent<typeof import("../../app/components/app-specific/forms/CreateIssuanceForm.vue")['default']>
-  LazyAppSpecificFormsFireArmForm: LazyComponent<typeof import("../../app/components/app-specific/forms/FireArmForm.vue")['default']>
-  LazyAppSpecificFormsFirearmReturnDialog: LazyComponent<typeof import("../../app/components/app-specific/forms/FirearmReturnDialog.vue")['default']>
-  LazyAppSpecificFormsLoginForm: LazyComponent<typeof import("../../app/components/app-specific/forms/LoginForm.vue")['default']>
-  LazyAppSpecificFormsRoleForm: LazyComponent<typeof import("../../app/components/app-specific/forms/RoleForm.vue")['default']>
-  LazyAppSpecificFormsSetupBranchForm: LazyComponent<typeof import("../../app/components/app-specific/forms/SetupBranchForm.vue")['default']>
-  LazyAppSpecificFormsUserForm: LazyComponent<typeof import("../../app/components/app-specific/forms/UserForm.vue")['default']>
-  LazyAppSpecificPartialPageAmmunitions: LazyComponent<typeof import("../../app/components/app-specific/partial-page/ammunitions.vue")['default']>
-  LazyAppSpecificPartialPageFirearms: LazyComponent<typeof import("../../app/components/app-specific/partial-page/firearms.vue")['default']>
-  LazyAppSpecificPartialPageKits: LazyComponent<typeof import("../../app/components/app-specific/partial-page/kits.vue")['default']>
   LazyNuxtWelcome: LazyComponent<typeof import("../../node_modules/.pnpm/nuxt@4.4.2_@babel+core@7.29.0_@babel+plugin-syntax-jsx@7.28.6_@babel+core@7.29.0__@parc_5a195fceced10ac9fea902dd8b70b305/node_modules/nuxt/dist/app/components/welcome.vue")['default']>
   LazyNuxtLayout: LazyComponent<typeof import("../../node_modules/.pnpm/nuxt@4.4.2_@babel+core@7.29.0_@babel+plugin-syntax-jsx@7.28.6_@babel+core@7.29.0__@parc_5a195fceced10ac9fea902dd8b70b305/node_modules/nuxt/dist/app/components/nuxt-layout")['default']>
   LazyNuxtErrorBoundary: LazyComponent<typeof import("../../node_modules/.pnpm/nuxt@4.4.2_@babel+core@7.29.0_@babel+plugin-syntax-jsx@7.28.6_@babel+core@7.29.0__@parc_5a195fceced10ac9fea902dd8b70b305/node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue")['default']>

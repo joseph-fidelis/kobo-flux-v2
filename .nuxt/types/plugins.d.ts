@@ -22,7 +22,6 @@ type NuxtAppInjections =
   InjectionType<typeof import("../../node_modules/.pnpm/@nuxtjs+color-mode@4.0.0_magicast@0.5.2/node_modules/@nuxtjs/color-mode/dist/runtime/plugin.server.js")> &
   InjectionType<typeof import("../../node_modules/.pnpm/@nuxtjs+color-mode@4.0.0_magicast@0.5.2/node_modules/@nuxtjs/color-mode/dist/runtime/plugin.client.js")> &
   InjectionType<typeof import("../../app/plugins/apexcharts.client")> &
-  InjectionType<typeof import("../../app/plugins/auth")> &
   InjectionType<typeof import("../../app/plugins/ssr-width")>
 
 declare module '#app' {

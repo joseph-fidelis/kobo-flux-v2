@@ -1,5 +1,30 @@
 import type { H3Event } from "h3"
-import { createError, getQuery, getRequestHeader, readRawBody } from "h3"
+import { createError, getQuery, getRequestHeader, readRawBody, setResponseHeaders } from "h3"
+
+function isBinaryUpstreamPath(path: string) {
+  return /\/xls\/?$/.test(path)
+}
+
+function isTextXmlUpstreamPath(path: string) {
+  return /\/xform\/?$/.test(path)
+}
+
+function isSubmissionDataXmlExport(path: string, query: Record<string, unknown>) {
+  return /\/data\/?$/.test(path) && String(query.format ?? "") === "xml"
+}
+
+function usesWildcardAccept(path: string, query: Record<string, unknown>) {
+  return (
+    isBinaryUpstreamPath(path)
+    || isTextXmlUpstreamPath(path)
+    || isSubmissionDataXmlExport(path, query)
+  )
+}
+
+/** Kobo's Django API requires trailing slashes; Nitro catch-all routes may strip them. */
+function normalizeKoboApiPath(path: string) {
+  return path.endsWith("/") ? path : `${path}/`
+}
 
 /**
  * Forward an incoming request to the KoboToolbox API.
@@ -16,7 +41,9 @@ export async function proxyToKobo(event: H3Event, upstreamPath: string) {
   }
 
   const base = config.koboBaseUrl.replace(/\/$/, "")
-  const path = upstreamPath.startsWith("/") ? upstreamPath : `/${upstreamPath}`
+  const path = normalizeKoboApiPath(
+    upstreamPath.startsWith("/") ? upstreamPath : `/${upstreamPath}`,
+  )
   const target = `${base}${path}`
 
   const method = event.method
@@ -27,9 +54,10 @@ export async function proxyToKobo(event: H3Event, upstreamPath: string) {
     body = (await readRawBody(event, false)) ?? undefined
   }
 
+  const clientAccept = getRequestHeader(event, "accept")
   const headers: Record<string, string> = {
     Authorization: `Token ${config.koboApiToken}`,
-    Accept: getRequestHeader(event, "accept") || "application/json",
+    Accept: usesWildcardAccept(path, query) ? "*/*" : clientAccept || "application/json",
   }
 
   const contentType = getRequestHeader(event, "content-type")
@@ -38,6 +66,43 @@ export async function proxyToKobo(event: H3Event, upstreamPath: string) {
   }
 
   try {
+    if (isBinaryUpstreamPath(path)) {
+      const response = await $fetch.raw(target, {
+        method,
+        query,
+        body,
+        headers,
+        responseType: "arrayBuffer",
+      })
+
+      setResponseHeaders(event, {
+        "content-type":
+          response.headers.get("content-type") ??
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        ...(response.headers.get("content-disposition")
+          ? { "content-disposition": response.headers.get("content-disposition")! }
+          : {}),
+      })
+
+      return new Uint8Array(response._data as ArrayBuffer)
+    }
+
+    if (isSubmissionDataXmlExport(path, query) || isTextXmlUpstreamPath(path)) {
+      const response = await $fetch.raw(target, {
+        method,
+        query,
+        body,
+        headers,
+        responseType: "text",
+      })
+
+      setResponseHeaders(event, {
+        "content-type": response.headers.get("content-type") ?? "application/xml",
+      })
+
+      return response._data
+    }
+
     return await $fetch(target, {
       method,
       query,

@@ -85,6 +85,7 @@ declare global {
   const parseCookies: typeof import('../../node_modules/.pnpm/h3@1.15.6/node_modules/h3').parseCookies
   const promisifyNodeListener: typeof import('../../node_modules/.pnpm/h3@1.15.6/node_modules/h3').promisifyNodeListener
   const proxyRequest: typeof import('../../node_modules/.pnpm/h3@1.15.6/node_modules/h3').proxyRequest
+  const proxyToKobo: typeof import('../../server/utils/proxy-kobo').proxyToKobo
   const readBody: typeof import('../../node_modules/.pnpm/h3@1.15.6/node_modules/h3').readBody
   const readFormData: typeof import('../../node_modules/.pnpm/h3@1.15.6/node_modules/h3').readFormData
   const readMultipartFormData: typeof import('../../node_modules/.pnpm/h3@1.15.6/node_modules/h3').readMultipartFormData
@@ -145,5 +146,6 @@ export { getRouteRules } from 'nitropack/runtime/internal/route-rules';
 export { useEvent } from 'nitropack/runtime/internal/context';
 export { defineTask, runTask } from 'nitropack/runtime/internal/task';
 export { defineNitroErrorHandler } from 'nitropack/runtime/internal/error/utils';
-export { buildAssetsURL as __buildAssetsURL, publicAssetsURL as __publicAssetsURL } from '/home/sofrosyn/Documents/Sofrosyn-engineering/nuxtjs-template/node_modules/.pnpm/@nuxt+nitro-server@4.4.2_@babel+core@7.29.0_db0@0.3.4_ioredis@5.10.0_magicast@0.5.2_nux_65b2d303d289722d7fd42c9ef9e745ca/node_modules/@nuxt/nitro-server/dist/runtime/utils/paths';
-export { defineAppConfig } from '/home/sofrosyn/Documents/Sofrosyn-engineering/nuxtjs-template/node_modules/.pnpm/@nuxt+nitro-server@4.4.2_@babel+core@7.29.0_db0@0.3.4_ioredis@5.10.0_magicast@0.5.2_nux_65b2d303d289722d7fd42c9ef9e745ca/node_modules/@nuxt/nitro-server/dist/runtime/utils/config';
+export { buildAssetsURL as __buildAssetsURL, publicAssetsURL as __publicAssetsURL } from '/home/sofrosyn/Documents/Personal/kobo-flux-v2/node_modules/.pnpm/@nuxt+nitro-server@4.4.2_@babel+core@7.29.0_db0@0.3.4_ioredis@5.10.0_magicast@0.5.2_nux_65b2d303d289722d7fd42c9ef9e745ca/node_modules/@nuxt/nitro-server/dist/runtime/utils/paths';
+export { defineAppConfig } from '/home/sofrosyn/Documents/Personal/kobo-flux-v2/node_modules/.pnpm/@nuxt+nitro-server@4.4.2_@babel+core@7.29.0_db0@0.3.4_ioredis@5.10.0_magicast@0.5.2_nux_65b2d303d289722d7fd42c9ef9e745ca/node_modules/@nuxt/nitro-server/dist/runtime/utils/config';
+export { proxyToKobo } from '/home/sofrosyn/Documents/Personal/kobo-flux-v2/server/utils/proxy-kobo';
