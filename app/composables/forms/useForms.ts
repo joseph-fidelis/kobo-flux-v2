@@ -37,6 +37,10 @@ export function useForms() {
     navigateTo({ path: '/forms/submissions', query: { form: uid } })
   }
 
+  function uploadData(uid: string) {
+    navigateTo({ path: '/forms/upload', query: { form: uid } })
+  }
+
   onMounted(refresh)
 
   return {
@@ -46,6 +50,7 @@ export function useForms() {
     refresh,
     viewDetails,
     viewSubmissions,
+    uploadData,
     formatOwner: formatAssetOwner,
   }
 }

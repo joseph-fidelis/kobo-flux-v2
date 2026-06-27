@@ -36,6 +36,16 @@
           <Download class="mr-2 h-4 w-4" />
           {{ downloading === 'xlsx' ? 'Downloading…' : 'XLSX' }}
         </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          as-child
+        >
+          <NuxtLink :to="{ path: '/forms/upload', query: { form: form.uid } }">
+            <Upload class="mr-2 h-4 w-4" />
+            Upload data
+          </NuxtLink>
+        </Button>
       
       </div>
     </div>
@@ -190,7 +200,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
-import { ArrowLeft, Download } from 'lucide-vue-next'
+import { ArrowLeft, Download, Upload } from 'lucide-vue-next'
 import { useFormDetail } from '~/composables/forms/useFormDetail'
 
 definePageMeta({ layout: 'admin-layout' })

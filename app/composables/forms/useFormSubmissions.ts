@@ -1,5 +1,6 @@
 import type { Asset } from '~/lib/models/ProjectsLibrary'
-import type { CreateExportPayload, SubmissionRecord } from '~/lib/models/SurveyData'
+import type { SubmissionRecord } from '~/lib/models/SurveyData'
+import { buildKoboLabelExportPayload, sleep } from '~/lib/helpers/koboExport'
 import { sanitizeFilename, triggerBrowserDownload } from '~/lib/helpers/download'
 import { useProjectsLibraryApi } from '~/services/project.service'
 import { useSubmissionApi } from '~/services/survey.service'
@@ -9,27 +10,8 @@ const SUBMISSIONS_EXPORT_LIMIT = 10
 
 type SubmissionDownloadFormat = 'json' | 'xml' | 'xlsx'
 
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
-
 function submissionExportFilename(formName: string, extension: string) {
   return `${sanitizeFilename(formName)}-submissions-${SUBMISSIONS_EXPORT_LIMIT}.${extension}`
-}
-
-function buildSubmissionExportPayload(submissionIds: number[]): CreateExportPayload {
-  return {
-    fields_from_all_versions: true,
-    group_sep: '/',
-    hierarchy_in_labels: false,
-    include_media_url: true,
-    lang: '_default',
-    multiple_select: 'both',
-    type: 'xls',
-    flatten: false,
-    xls_types_as_text: false,
-    submission_ids: submissionIds,
-  }
 }
 
 export function useFormSubmissions(formUid: MaybeRefOrGetter<string | undefined>) {
@@ -222,7 +204,7 @@ export function useFormSubmissions(formUid: MaybeRefOrGetter<string | undefined>
         return
       }
 
-      const task = await createExport(id, buildSubmissionExportPayload(submissionIds))
+      const task = await createExport(id, buildKoboLabelExportPayload({ submission_ids: submissionIds }))
       await waitForExport(id, task.uid)
       const blob = await downloadExportFile(id, task.uid)
       triggerBrowserDownload(blob, submissionExportFilename(downloadBaseName.value, 'xlsx'))

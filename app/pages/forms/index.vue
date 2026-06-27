@@ -92,6 +92,10 @@
                     <Inbox class="h-4 w-4" />
                     View submissions
                   </DropdownMenuItem>
+                  <DropdownMenuItem @click="uploadData(form.uid)">
+                    <UploadCloud class="h-4 w-4" />
+                    Upload data
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </TableCell>
@@ -121,12 +125,12 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { FileText, Inbox, MoreVertical } from 'lucide-vue-next'
+import { FileText, Inbox, MoreVertical, UploadCloud } from 'lucide-vue-next'
 import { useForms } from '~/composables/forms/useForms'
 
 definePageMeta({ layout: 'admin-layout' })
 
-const { forms, pending, error, refresh, viewDetails, viewSubmissions, formatOwner } = useForms()
+const { forms, pending, error, refresh, viewDetails, viewSubmissions, uploadData, formatOwner } = useForms()
 const { formatDate } = useFormatDate()
 const { formatDeploymentStatus, deploymentStatusVariant } = useAssetStatus()
 </script>
