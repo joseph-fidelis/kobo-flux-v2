@@ -23,6 +23,7 @@ function usesWildcardAccept(path: string, query: Record<string, unknown>) {
 
 /** Kobo's Django API requires trailing slashes; Nitro catch-all routes may strip them. */
 function normalizeKoboApiPath(path: string) {
+  if (/\.[a-zA-Z0-9]+$/.test(path)) return path
   return path.endsWith("/") ? path : `${path}/`
 }
 

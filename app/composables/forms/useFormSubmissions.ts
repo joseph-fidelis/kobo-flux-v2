@@ -1,6 +1,7 @@
 import type { Asset } from '~/lib/models/ProjectsLibrary'
 import type { SubmissionRecord } from '~/lib/models/SurveyData'
-import { buildKoboLabelExportPayload, sleep } from '~/lib/helpers/koboExport'
+import { buildKoboLabelExportPayload } from '~/lib/helpers/koboExport'
+import { fetchKoboExportBlob } from '~/lib/helpers/koboExportJob'
 import { sanitizeFilename, triggerBrowserDownload } from '~/lib/helpers/download'
 import { useProjectsLibraryApi } from '~/services/project.service'
 import { useSubmissionApi } from '~/services/survey.service'
@@ -16,13 +17,8 @@ function submissionExportFilename(formName: string, extension: string) {
 
 export function useFormSubmissions(formUid: MaybeRefOrGetter<string | undefined>) {
   const route = useRoute()
-  const {
-    getSubmissions,
-    getSubmissionsXml,
-    createExport,
-    getExport,
-    downloadExportFile,
-  } = useSubmissionApi()
+  const submissionApi = useSubmissionApi()
+  const { getSubmissions, getSubmissionsXml } = submissionApi
   const { getAsset } = useProjectsLibraryApi()
 
   const uid = computed(() => toValue(formUid))
@@ -128,19 +124,6 @@ export function useFormSubmissions(formUid: MaybeRefOrGetter<string | undefined>
     return response.results
   }
 
-  async function waitForExport(assetUid: string, exportUid: string) {
-    const maxAttempts = 60
-    for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
-      const task = await getExport(assetUid, exportUid)
-      if (task.status === 'complete') return task
-      if (task.status === 'error') {
-        throw new Error('Kobo export failed')
-      }
-      await sleep(2000)
-    }
-    throw new Error('Export timed out')
-  }
-
   async function downloadSubmissionJson() {
     const id = uid.value
     if (!id) return
@@ -204,9 +187,11 @@ export function useFormSubmissions(formUid: MaybeRefOrGetter<string | undefined>
         return
       }
 
-      const task = await createExport(id, buildKoboLabelExportPayload({ submission_ids: submissionIds }))
-      await waitForExport(id, task.uid)
-      const blob = await downloadExportFile(id, task.uid)
+      const blob = await fetchKoboExportBlob(
+        submissionApi,
+        id,
+        buildKoboLabelExportPayload({ submission_ids: submissionIds }),
+      )
       triggerBrowserDownload(blob, submissionExportFilename(downloadBaseName.value, 'xlsx'))
     } catch (err: unknown) {
       const apiErr = err as { message?: string }

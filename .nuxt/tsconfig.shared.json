@@ -107,7 +107,7 @@
         "./tailwindcss/sources"
       ],
       "#app-manifest": [
-        "./manifest/meta/dev.json"
+        "./manifest/meta/dev"
       ],
       "#build": [
         "."

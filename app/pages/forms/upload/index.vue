@@ -12,13 +12,22 @@
       </Button>
 
       <div v-if="form && !pending && expectedHeaders.length > 0" class="flex flex-wrap items-center justify-end gap-2">
-        <Button variant="outline" size="sm" :disabled="headersPending" @click="downloadTemplate">
+        <Button variant="outline" size="sm" :disabled="headersPending || uploading" @click="downloadTemplate">
           <Download class="mr-2 h-4 w-4" />
           Template
         </Button>
-        <Button size="sm" :disabled="!canUpload" @click="upload">
+        <Button
+          v-if="uploadResults.length > 0"
+          variant="outline"
+          size="sm"
+          @click="downloadUploadLog"
+        >
+          <Download class="mr-2 h-4 w-4" />
+          Download log
+        </Button>
+        <Button size="sm" :disabled="!canUpload || uploading" @click="upload">
           <Upload class="mr-2 h-4 w-4" />
-          Upload
+          {{ uploading ? 'Uploading…' : 'Upload' }}
         </Button>
       </div>
     </div>
@@ -74,7 +83,7 @@
             <Input
               type="file"
               accept=".xlsx,.xls"
-              :disabled="parsing"
+              :disabled="parsing || uploading"
               @change="onInputChange"
             />
             <p v-if="parsing" class="text-sm text-muted-foreground">Reading spreadsheet…</p>
@@ -123,11 +132,57 @@
           </AlertDescription>
         </Alert>
 
+        <div v-if="uploading || uploadProgress.done > 0" class="flex flex-col gap-2">
+          <div class="flex items-center justify-between text-sm text-muted-foreground">
+            <span>Upload progress</span>
+            <span>{{ uploadProgress.done }} / {{ uploadProgress.total }}</span>
+          </div>
+          <div class="h-2 w-full overflow-hidden rounded-full bg-muted">
+            <div
+              class="h-full bg-primary transition-all duration-300"
+              :style="{ width: `${uploadProgressPercent}%` }"
+            />
+          </div>
+          <p v-if="uploadProgress.done > 0" class="text-xs text-muted-foreground">
+            {{ uploadProgress.succeeded }} succeeded · {{ uploadProgress.failed }} failed
+          </p>
+        </div>
+
         <div
           v-if="uploadMessage"
           class="rounded-lg border border-border bg-muted/40 px-4 py-3 text-sm"
         >
           {{ uploadMessage }}
+        </div>
+
+        <div v-if="uploadResults.length > 0" class="rounded-lg border border-border">
+          <div class="border-b border-border px-4 py-3">
+            <h2 class="text-sm font-medium">Upload results</h2>
+          </div>
+          <div class="max-h-64 overflow-y-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead class="w-16">Row</TableHead>
+                  <TableHead class="w-24">Status</TableHead>
+                  <TableHead>Message</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <TableRow v-for="result in uploadResults" :key="result.row">
+                  <TableCell class="font-medium tabular-nums">{{ result.row }}</TableCell>
+                  <TableCell>
+                    <Badge :variant="result.ok ? 'default' : 'destructive'">
+                      {{ result.ok ? 'OK' : 'Failed' }}
+                    </Badge>
+                  </TableCell>
+                  <TableCell class="max-w-md truncate text-sm text-muted-foreground" :title="result.message">
+                    {{ result.message ?? '—' }}
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </div>
         </div>
 
         <div v-if="previewRows.length > 0" class="rounded-lg border border-border">
@@ -172,6 +227,7 @@
 
 <script lang="ts" setup>
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -204,6 +260,7 @@ const {
   pending,
   headersPending,
   parsing,
+  uploading,
   error,
   parseError,
   hasForm,
@@ -215,11 +272,19 @@ const {
   validation,
   canUpload,
   uploadMessage,
+  uploadProgress,
+  uploadResults,
   refresh,
   onFileSelected,
   downloadTemplate,
+  downloadUploadLog,
   upload,
 } = useSubmissionUpload(formUid)
+
+const uploadProgressPercent = computed(() => {
+  if (uploadProgress.value.total === 0) return 0
+  return Math.round((uploadProgress.value.done / uploadProgress.value.total) * 100)
+})
 
 function onInputChange(event: Event) {
   const input = event.target as HTMLInputElement

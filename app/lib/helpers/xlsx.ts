@@ -14,6 +14,10 @@ export function parseXlsxBuffer(buffer: ArrayBuffer): ParsedXlsxSheet {
   }
 
   const sheet = workbook.Sheets[sheetName]
+  if (!sheet) {
+    throw new Error(`Sheet "${sheetName}" not found`)
+  }
+
   const rows = XLSX.utils.sheet_to_json<(string | number)[]>(sheet, {
     header: 1,
     defval: '',

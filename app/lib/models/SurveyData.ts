@@ -295,3 +295,43 @@ export interface KoboListParams {
     count?: number
     list?: Array<Record<string, unknown>>
   }
+
+  // ---------------------------------------------------------------------------
+  // v1 submission upload
+  // ---------------------------------------------------------------------------
+
+  export interface SubmissionFormMeta {
+    assetUid: string
+    formId: string
+    formhubUuid?: string
+  }
+
+  export interface KoboV1SubmissionPayload {
+    id: string
+    submission: Record<string, unknown>
+  }
+
+  export interface SubmissionUploadResponse {
+    status: number
+    data: unknown
+  }
+
+  export interface SubmissionUploadRowResult {
+    row: number
+    ok: boolean
+    status?: number
+    message?: string
+  }
+
+  export interface SubmissionUploadProgress {
+    done: number
+    total: number
+    succeeded: number
+    failed: number
+  }
+
+  export interface KoboV1FormListItem {
+    id_string?: string
+    uuid?: string
+    title?: string
+  }

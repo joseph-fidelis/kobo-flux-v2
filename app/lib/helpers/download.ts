@@ -10,3 +10,4 @@ export function triggerBrowserDownload(blob: Blob, filename: string) {
   anchor.click()
   URL.revokeObjectURL(url)
 }
+ 

@@ -1,63 +1,151 @@
-import type { Asset } from '~/lib/models/ProjectsLibrary'
-import type { HeaderValidation } from '~/lib/helpers/validateSubmissionHeaders'
-import { buildKoboLabelExportPayload, sleep } from '~/lib/helpers/koboExport'
+import type { Asset, Deployment } from '~/lib/models/ProjectsLibrary'
+import type {
+  SubmissionFormMeta,
+  SubmissionUploadProgress,
+  SubmissionUploadRowResult,
+} from '~/lib/models/SurveyData'
+import {
+  buildKoboLabelExportPayload,
+  buildKoboXmlExportPayload,
+  sleep,
+} from '~/lib/helpers/koboExport'
+import { fetchKoboExportHeaders } from '~/lib/helpers/koboExportJob'
 import { triggerBrowserDownload } from '~/lib/helpers/download'
-import { validateSubmissionHeaders } from '~/lib/helpers/validateSubmissionHeaders'
-import { buildXlsxBlob, parseXlsxBlob, parseXlsxFile } from '~/lib/helpers/xlsx'
+import {
+  buildLabelToXpathMap,
+  labelRowToSubmissionPayload,
+  rowsToFlatDicts,
+  validateSubmissionHeaders,
+  type HeaderValidation,
+} from '~/lib/helpers/submissionUpload'
+import { buildXlsxBlob, parseXlsxFile } from '~/lib/helpers/xlsx'
 import { useProjectsLibraryApi } from '~/services/project.service'
 import { useSubmissionApi } from '~/services/survey.service'
 
 const PREVIEW_ROW_LIMIT = 10
+const UPLOAD_DELAY_MS = 100
+
+function extractFormhubUuid(asset: Asset): string | undefined {
+  const candidates = ['uuid', 'formhub_uuid', 'kuid'] as const
+  for (const key of candidates) {
+    const value = asset[key]
+    if (typeof value === 'string' && value.trim()) return value.trim()
+  }
+  return undefined
+}
+
+function resolveFormId(asset: Asset, deployment: Deployment | null): string | undefined {
+  const fromAsset = asset.deployment__identifier
+  if (typeof fromAsset === 'string' && fromAsset.trim()) return fromAsset.trim()
+  const fromDeployment = deployment?.identifier
+  if (typeof fromDeployment === 'string' && fromDeployment.trim()) return fromDeployment.trim()
+  return undefined
+}
+
+function responseMessage(data: unknown): string {
+  if (data == null) return 'Unknown error'
+  if (typeof data === 'string') return data
+  if (typeof data === 'object') {
+    const record = data as Record<string, unknown>
+    if (typeof record.detail === 'string') return record.detail
+    if (typeof record.message === 'string') return record.message
+    return JSON.stringify(data)
+  }
+  return String(data)
+}
 
 export function useSubmissionUpload(formUid: MaybeRefOrGetter<string | undefined>) {
   const uid = computed(() => toValue(formUid))
-  const { getAsset } = useProjectsLibraryApi()
-  const { createExport, getExport, downloadExportFile } = useSubmissionApi()
+  const { getAsset, getDeployment } = useProjectsLibraryApi()
+  const submissionApi = useSubmissionApi()
+  const { submitSubmission, getV1Forms } = submissionApi
 
   const form = ref<Asset | null>(null)
+  const deployment = ref<Deployment | null>(null)
+  const formMeta = ref<SubmissionFormMeta | null>(null)
   const expectedHeaders = ref<string[]>([])
+  const labelToXpath = ref<Map<string, string>>(new Map())
   const pending = ref(true)
   const headersPending = ref(false)
   const parsing = ref(false)
+  const uploading = ref(false)
   const error = ref<string | null>(null)
   const parseError = ref<string | null>(null)
 
   const selectedFile = ref<File | null>(null)
   const uploadedHeaders = ref<string[]>([])
+  const parsedDataRows = ref<(string | number)[][]>([])
   const previewRows = ref<(string | number)[][]>([])
   const totalRowCount = ref(0)
   const validation = ref<HeaderValidation | null>(null)
   const uploadMessage = ref<string | null>(null)
+  const uploadProgress = ref<SubmissionUploadProgress>({
+    done: 0,
+    total: 0,
+    succeeded: 0,
+    failed: 0,
+  })
+  const uploadResults = ref<SubmissionUploadRowResult[]>([])
 
   const hasForm = computed(() => Boolean(uid.value))
-  const canUpload = computed(() => validation.value?.valid === true && totalRowCount.value > 0)
+  const isDeployable = computed(
+    () => Boolean(formMeta.value) && Boolean(form.value?.has_deployment && deployment.value?.active),
+  )
+  const canUpload = computed(
+    () =>
+      validation.value?.valid === true
+      && totalRowCount.value > 0
+      && isDeployable.value
+      && !uploading.value,
+  )
 
   const previewHeaders = computed(() => {
     if (uploadedHeaders.value.length > 0) return uploadedHeaders.value
     return expectedHeaders.value
   })
 
-  async function waitForExport(assetUid: string, exportUid: string) {
-    const maxAttempts = 60
-    for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
-      const task = await getExport(assetUid, exportUid)
-      if (task.status === 'complete') return task
-      if (task.status === 'error') {
-        throw new Error('Kobo export failed while loading expected headers')
-      }
-      await sleep(2000)
+  async function resolveFormhubUuid(formId: string, asset: Asset): Promise<string | undefined> {
+    const fromAsset = extractFormhubUuid(asset)
+    if (fromAsset) return fromAsset
+
+    try {
+      const forms = await getV1Forms()
+      const match = forms.find((item) => item.id_string === formId)
+      return match?.uuid
+    } catch {
+      return undefined
     }
-    throw new Error('Timed out waiting for Kobo export headers')
+  }
+
+  async function resolveFormMeta(asset: Asset, deploymentData: Deployment | null) {
+    const formId = resolveFormId(asset, deploymentData)
+    if (!formId) {
+      throw new Error('Could not resolve form id_string from deployment')
+    }
+
+    const formhubUuid = await resolveFormhubUuid(formId, asset)
+    formMeta.value = {
+      assetUid: asset.uid,
+      formId,
+      ...(formhubUuid ? { formhubUuid } : {}),
+    }
   }
 
   async function fetchExpectedExportHeaders(assetUid: string) {
     headersPending.value = true
     try {
-      const task = await createExport(assetUid, buildKoboLabelExportPayload())
-      await waitForExport(assetUid, task.uid)
-      const blob = await downloadExportFile(assetUid, task.uid)
-      const parsed = await parseXlsxBlob(blob)
-      expectedHeaders.value = parsed.headers
+      const labelHeaders = await fetchKoboExportHeaders(
+        submissionApi,
+        assetUid,
+        buildKoboLabelExportPayload(),
+      )
+      const xpathHeaders = await fetchKoboExportHeaders(
+        submissionApi,
+        assetUid,
+        buildKoboXmlExportPayload(),
+      )
+      expectedHeaders.value = labelHeaders
+      labelToXpath.value = buildLabelToXpathMap(labelHeaders, xpathHeaders)
     } finally {
       headersPending.value = false
     }
@@ -68,7 +156,10 @@ export function useSubmissionUpload(formUid: MaybeRefOrGetter<string | undefined
     if (!id) {
       pending.value = false
       form.value = null
+      deployment.value = null
+      formMeta.value = null
       expectedHeaders.value = []
+      labelToXpath.value = new Map()
       error.value = null
       return
     }
@@ -78,13 +169,31 @@ export function useSubmissionUpload(formUid: MaybeRefOrGetter<string | undefined
     clearFile()
 
     try {
-      form.value = await getAsset(id)
+      const asset = await getAsset(id)
+      form.value = asset
+      deployment.value = null
+
+      if (!asset.has_deployment) {
+        throw new Error('Form is not deployed. Deploy the form before uploading submissions.')
+      }
+
+      const deploymentData = await getDeployment(id)
+      deployment.value = deploymentData
+
+      if (!deploymentData.active) {
+        throw new Error('Form deployment is not active. Redeploy the form before uploading.')
+      }
+
+      await resolveFormMeta(asset, deploymentData)
       await fetchExpectedExportHeaders(id)
     } catch (err: unknown) {
       const apiErr = err as { message?: string }
       error.value = apiErr.message ?? 'Failed to load form export headers'
       form.value = null
+      deployment.value = null
+      formMeta.value = null
       expectedHeaders.value = []
+      labelToXpath.value = new Map()
     } finally {
       pending.value = false
     }
@@ -93,11 +202,14 @@ export function useSubmissionUpload(formUid: MaybeRefOrGetter<string | undefined
   function clearFile() {
     selectedFile.value = null
     uploadedHeaders.value = []
+    parsedDataRows.value = []
     previewRows.value = []
     totalRowCount.value = 0
     validation.value = null
     parseError.value = null
     uploadMessage.value = null
+    uploadResults.value = []
+    uploadProgress.value = { done: 0, total: 0, succeeded: 0, failed: 0 }
   }
 
   async function onFileSelected(file: File | null) {
@@ -111,6 +223,7 @@ export function useSubmissionUpload(formUid: MaybeRefOrGetter<string | undefined
     try {
       const parsed = await parseXlsxFile(file)
       uploadedHeaders.value = parsed.headers
+      parsedDataRows.value = parsed.dataRows
       totalRowCount.value = parsed.dataRows.length
       previewRows.value = parsed.dataRows.slice(0, PREVIEW_ROW_LIMIT)
       validation.value = validateSubmissionHeaders(
@@ -135,22 +248,87 @@ export function useSubmissionUpload(formUid: MaybeRefOrGetter<string | undefined
     triggerBrowserDownload(blob, `${name.replace(/[^\w.-]+/g, '_')}-upload-template.xlsx`)
   }
 
-  function upload() {
-    if (!canUpload.value) return
-    uploadMessage.value = `${totalRowCount.value} row(s) validated and ready for import. Bulk upload to Kobo will be wired in a follow-up.`
+  function downloadUploadLog() {
+    if (uploadResults.value.length === 0) return
+    const lines = uploadResults.value.map((result) => {
+      const status = result.ok ? 'SUCCESS' : 'FAILED'
+      return `[Row ${result.row}] ${status}${result.status ? ` (${result.status})` : ''}: ${result.message ?? ''}`
+    })
+    const blob = new Blob([lines.join('\n')], { type: 'text/plain' })
+    const name = form.value?.name ?? uid.value ?? 'form'
+    triggerBrowserDownload(blob, `${name.replace(/[^\w.-]+/g, '_')}-upload-log.txt`)
+  }
+
+  async function upload() {
+    if (!canUpload.value || !formMeta.value) return
+
+    uploading.value = true
+    uploadMessage.value = null
+    uploadResults.value = []
+
+    const labelRows = rowsToFlatDicts(uploadedHeaders.value, parsedDataRows.value)
+    const total = labelRows.length
+    uploadProgress.value = { done: 0, total, succeeded: 0, failed: 0 }
+
+    for (let index = 0; index < labelRows.length; index += 1) {
+      const rowNumber = index + 1
+      const payload = labelRowToSubmissionPayload(
+        formMeta.value,
+        labelRows[index]!,
+        labelToXpath.value,
+      )
+
+      try {
+        const response = await submitSubmission(payload)
+        const ok = response.status === 201
+        uploadResults.value.push({
+          row: rowNumber,
+          ok,
+          status: response.status,
+          message: ok ? 'Submitted' : responseMessage(response.data),
+        })
+        if (ok) {
+          uploadProgress.value.succeeded += 1
+        } else {
+          uploadProgress.value.failed += 1
+        }
+      } catch (err: unknown) {
+        const apiErr = err as { message?: string; status_code?: number }
+        uploadResults.value.push({
+          row: rowNumber,
+          ok: false,
+          status: apiErr.status_code,
+          message: apiErr.message ?? 'Request failed',
+        })
+        uploadProgress.value.failed += 1
+      }
+
+      uploadProgress.value.done += 1
+      if (index < labelRows.length - 1) {
+        await sleep(UPLOAD_DELAY_MS)
+      }
+    }
+
+    const { succeeded, failed } = uploadProgress.value
+    uploadMessage.value = `Upload complete: ${succeeded} succeeded, ${failed} failed.`
+    uploading.value = false
   }
 
   watch(uid, refresh, { immediate: true })
 
   return {
     form,
+    deployment,
+    formMeta,
     expectedHeaders,
     pending,
     headersPending,
     parsing,
+    uploading,
     error,
     parseError,
     hasForm,
+    isDeployable,
     selectedFile,
     uploadedHeaders,
     previewHeaders,
@@ -160,10 +338,13 @@ export function useSubmissionUpload(formUid: MaybeRefOrGetter<string | undefined
     validation,
     canUpload,
     uploadMessage,
+    uploadProgress,
+    uploadResults,
     refresh,
     onFileSelected,
     clearFile,
     downloadTemplate,
+    downloadUploadLog,
     upload,
   }
 }

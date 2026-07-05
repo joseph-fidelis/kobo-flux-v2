@@ -32,9 +32,14 @@ import type {
   UpdatePairedDataPayload,
   UpdateValidationStatusPayload,
   ValidationStatus,
+  KoboV1FormListItem,
+  KoboV1SubmissionPayload,
+  SubmissionUploadResponse,
 } from "~/lib/models/SurveyData"
 
 const BASE = "/api/v2/assets"
+const V1_SUBMISSIONS = "/api/v1/submissions.json"
+const V1_FORMS = "/api/v1/forms.json"
 
 /**
  * Service layer for KoboToolbox API v2 "Survey data" endpoints.
@@ -372,5 +377,14 @@ export const useSubmissionApi = () => {
 
     getReports: (assetUid: string) =>
       api.get<AssetReport>(`${BASE}/${assetUid}/reports/`),
+
+    // -----------------------------------------------------------------
+    // v1 submission upload (KC)
+    // -----------------------------------------------------------------
+
+    submitSubmission: (payload: KoboV1SubmissionPayload) =>
+      api.post<SubmissionUploadResponse>(V1_SUBMISSIONS, payload),
+
+    getV1Forms: () => api.get<KoboV1FormListItem[]>(V1_FORMS),
   }
 }

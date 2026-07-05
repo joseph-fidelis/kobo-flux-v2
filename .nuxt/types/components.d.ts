@@ -36,6 +36,9 @@ interface _GlobalComponents {
   Alert: typeof import("../../app/components/ui/alert/index")['Alert']
   AlertDescription: typeof import("../../app/components/ui/alert/index")['AlertDescription']
   AlertTitle: typeof import("../../app/components/ui/alert/index")['AlertTitle']
+  Avatar: typeof import("../../app/components/ui/avatar/index")['Avatar']
+  AvatarFallback: typeof import("../../app/components/ui/avatar/index")['AvatarFallback']
+  AvatarImage: typeof import("../../app/components/ui/avatar/index")['AvatarImage']
   AlertDialog: typeof import("../../app/components/ui/alert-dialog/index")['AlertDialog']
   AlertDialogAction: typeof import("../../app/components/ui/alert-dialog/index")['AlertDialogAction']
   AlertDialogCancel: typeof import("../../app/components/ui/alert-dialog/index")['AlertDialogCancel']
@@ -45,10 +48,8 @@ interface _GlobalComponents {
   AlertDialogHeader: typeof import("../../app/components/ui/alert-dialog/index")['AlertDialogHeader']
   AlertDialogTitle: typeof import("../../app/components/ui/alert-dialog/index")['AlertDialogTitle']
   AlertDialogTrigger: typeof import("../../app/components/ui/alert-dialog/index")['AlertDialogTrigger']
-  Avatar: typeof import("../../app/components/ui/avatar/index")['Avatar']
-  AvatarFallback: typeof import("../../app/components/ui/avatar/index")['AvatarFallback']
-  AvatarImage: typeof import("../../app/components/ui/avatar/index")['AvatarImage']
   Badge: typeof import("../../app/components/ui/badge/index")['Badge']
+  Button: typeof import("../../app/components/ui/button/index")['Button']
   Breadcrumb: typeof import("../../app/components/ui/breadcrumb/index")['Breadcrumb']
   BreadcrumbEllipsis: typeof import("../../app/components/ui/breadcrumb/index")['BreadcrumbEllipsis']
   BreadcrumbItem: typeof import("../../app/components/ui/breadcrumb/index")['BreadcrumbItem']
@@ -56,7 +57,6 @@ interface _GlobalComponents {
   BreadcrumbList: typeof import("../../app/components/ui/breadcrumb/index")['BreadcrumbList']
   BreadcrumbPage: typeof import("../../app/components/ui/breadcrumb/index")['BreadcrumbPage']
   BreadcrumbSeparator: typeof import("../../app/components/ui/breadcrumb/index")['BreadcrumbSeparator']
-  Button: typeof import("../../app/components/ui/button/index")['Button']
   Calendar: typeof import("../../app/components/ui/calendar/index")['Calendar']
   CalendarCell: typeof import("../../app/components/ui/calendar/index")['CalendarCell']
   CalendarCellTrigger: typeof import("../../app/components/ui/calendar/index")['CalendarCellTrigger']
@@ -188,8 +188,8 @@ interface _GlobalComponents {
   SidebarSeparator: typeof import("../../app/components/ui/sidebar/index")['SidebarSeparator']
   SidebarTrigger: typeof import("../../app/components/ui/sidebar/index")['SidebarTrigger']
   Skeleton: typeof import("../../app/components/ui/skeleton/index")['Skeleton']
-  Toaster: typeof import("../../app/components/ui/sonner/index")['Toaster']
   Spinner: typeof import("../../app/components/ui/spinner/index")['Spinner']
+  Toaster: typeof import("../../app/components/ui/sonner/index")['Toaster']
   Stepper: typeof import("../../app/components/ui/stepper/index")['Stepper']
   StepperDescription: typeof import("../../app/components/ui/stepper/index")['StepperDescription']
   StepperIndicator: typeof import("../../app/components/ui/stepper/index")['StepperIndicator']
@@ -251,6 +251,9 @@ interface _GlobalComponents {
   LazyAlert: LazyComponent<typeof import("../../app/components/ui/alert/index")['Alert']>
   LazyAlertDescription: LazyComponent<typeof import("../../app/components/ui/alert/index")['AlertDescription']>
   LazyAlertTitle: LazyComponent<typeof import("../../app/components/ui/alert/index")['AlertTitle']>
+  LazyAvatar: LazyComponent<typeof import("../../app/components/ui/avatar/index")['Avatar']>
+  LazyAvatarFallback: LazyComponent<typeof import("../../app/components/ui/avatar/index")['AvatarFallback']>
+  LazyAvatarImage: LazyComponent<typeof import("../../app/components/ui/avatar/index")['AvatarImage']>
   LazyAlertDialog: LazyComponent<typeof import("../../app/components/ui/alert-dialog/index")['AlertDialog']>
   LazyAlertDialogAction: LazyComponent<typeof import("../../app/components/ui/alert-dialog/index")['AlertDialogAction']>
   LazyAlertDialogCancel: LazyComponent<typeof import("../../app/components/ui/alert-dialog/index")['AlertDialogCancel']>
@@ -260,10 +263,8 @@ interface _GlobalComponents {
   LazyAlertDialogHeader: LazyComponent<typeof import("../../app/components/ui/alert-dialog/index")['AlertDialogHeader']>
   LazyAlertDialogTitle: LazyComponent<typeof import("../../app/components/ui/alert-dialog/index")['AlertDialogTitle']>
   LazyAlertDialogTrigger: LazyComponent<typeof import("../../app/components/ui/alert-dialog/index")['AlertDialogTrigger']>
-  LazyAvatar: LazyComponent<typeof import("../../app/components/ui/avatar/index")['Avatar']>
-  LazyAvatarFallback: LazyComponent<typeof import("../../app/components/ui/avatar/index")['AvatarFallback']>
-  LazyAvatarImage: LazyComponent<typeof import("../../app/components/ui/avatar/index")['AvatarImage']>
   LazyBadge: LazyComponent<typeof import("../../app/components/ui/badge/index")['Badge']>
+  LazyButton: LazyComponent<typeof import("../../app/components/ui/button/index")['Button']>
   LazyBreadcrumb: LazyComponent<typeof import("../../app/components/ui/breadcrumb/index")['Breadcrumb']>
   LazyBreadcrumbEllipsis: LazyComponent<typeof import("../../app/components/ui/breadcrumb/index")['BreadcrumbEllipsis']>
   LazyBreadcrumbItem: LazyComponent<typeof import("../../app/components/ui/breadcrumb/index")['BreadcrumbItem']>
@@ -271,7 +272,6 @@ interface _GlobalComponents {
   LazyBreadcrumbList: LazyComponent<typeof import("../../app/components/ui/breadcrumb/index")['BreadcrumbList']>
   LazyBreadcrumbPage: LazyComponent<typeof import("../../app/components/ui/breadcrumb/index")['BreadcrumbPage']>
   LazyBreadcrumbSeparator: LazyComponent<typeof import("../../app/components/ui/breadcrumb/index")['BreadcrumbSeparator']>
-  LazyButton: LazyComponent<typeof import("../../app/components/ui/button/index")['Button']>
   LazyCalendar: LazyComponent<typeof import("../../app/components/ui/calendar/index")['Calendar']>
   LazyCalendarCell: LazyComponent<typeof import("../../app/components/ui/calendar/index")['CalendarCell']>
   LazyCalendarCellTrigger: LazyComponent<typeof import("../../app/components/ui/calendar/index")['CalendarCellTrigger']>
@@ -403,8 +403,8 @@ interface _GlobalComponents {
   LazySidebarSeparator: LazyComponent<typeof import("../../app/components/ui/sidebar/index")['SidebarSeparator']>
   LazySidebarTrigger: LazyComponent<typeof import("../../app/components/ui/sidebar/index")['SidebarTrigger']>
   LazySkeleton: LazyComponent<typeof import("../../app/components/ui/skeleton/index")['Skeleton']>
-  LazyToaster: LazyComponent<typeof import("../../app/components/ui/sonner/index")['Toaster']>
   LazySpinner: LazyComponent<typeof import("../../app/components/ui/spinner/index")['Spinner']>
+  LazyToaster: LazyComponent<typeof import("../../app/components/ui/sonner/index")['Toaster']>
   LazyStepper: LazyComponent<typeof import("../../app/components/ui/stepper/index")['Stepper']>
   LazyStepperDescription: LazyComponent<typeof import("../../app/components/ui/stepper/index")['StepperDescription']>
   LazyStepperIndicator: LazyComponent<typeof import("../../app/components/ui/stepper/index")['StepperIndicator']>

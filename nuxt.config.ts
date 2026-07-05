@@ -17,7 +17,6 @@ export default defineNuxtConfig({
         '@vee-validate/zod',
         'vee-validate',
         'zod',
-        'vue3-apexcharts',
         '@vueuse/core',
         'lucide-vue-next',
         'vue-sonner',
@@ -32,7 +31,6 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@nuxtjs/color-mode',
     '@nuxt/icon',
-    '@pinia/nuxt',
     'pinia-plugin-persistedstate/nuxt',
   ],
   shadcn: {

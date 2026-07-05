@@ -36,6 +36,13 @@ export function buildKoboLabelExportPayload(
   }
 }
 
+/** Same export settings as label export but with xpath column headers. */
+export function buildKoboXmlExportPayload(
+  overrides: Partial<CreateExportPayload> = {},
+): CreateExportPayload {
+  return buildKoboLabelExportPayload({ lang: '_xml', ...overrides })
+}
+
 export function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
