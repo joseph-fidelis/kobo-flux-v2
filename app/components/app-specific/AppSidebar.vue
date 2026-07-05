@@ -55,7 +55,7 @@ function isNavActive(url: string) {
           <SidebarMenuButton size="lg" as-child>
             <NuxtLink to="/" class="flex items-center gap-3 no-underline">
               <div class="w-9 h-9 rounded-[10px] bg-blue-600 flex items-center justify-center shrink-0">
-                <span class="text-base font-extrabold text-white">A</span>
+                <span class="text-base font-extrabold text-white">KF</span>
               </div>
               <div class="flex flex-col gap-px overflow-hidden group-data-[collapsible=icon]/sidebar-wrapper:hidden">
                 <span class="text-[14px] font-bold text-foreground whitespace-nowrap">{{ appName }}</span>

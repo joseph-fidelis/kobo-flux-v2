@@ -1,0 +1,45 @@
+# Dependencies and build output (rebuilt inside the image)
+node_modules
+.nuxt
+.output
+dist
+
+# Secrets — pass at runtime via `docker run -e` or compose env_file
+.env
+.env.*
+!.env.example
+
+# Version control and editor
+.git
+.gitignore
+.cursor
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs and caches
+*.log
+npm-debug.log*
+pnpm-debug.log*
+.cache
+.turbo
+
+# Tests and CI (not needed for production image)
+coverage
+.nyc_output
+.github
+
+# Docs (not required to run the app)
+*.md
+!README.md
+docs
+
+# Docker (avoid recursive context)
+Dockerfile*
+docker-compose*.yml
+.dockerignore
