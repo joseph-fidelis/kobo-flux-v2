@@ -65,7 +65,7 @@ export function useSubmissionUpload(formUid: MaybeRefOrGetter<string | undefined
   const { getAsset, getDeployment } = useProjectsLibraryApi()
   const { getAssetContent, getAssetXml, getAssetXform } = useFormContentApi()
   const submissionApi = useSubmissionApi()
-  const { submitSubmission, getV1Forms } = submissionApi
+  const { submitSubmission } = submissionApi
 
   const form = ref<Asset | null>(null)
   const deployment = ref<Deployment | null>(null)
@@ -111,21 +111,8 @@ export function useSubmissionUpload(formUid: MaybeRefOrGetter<string | undefined
     return expectedHeaders.value
   })
 
-  async function resolveFormhubUuid(asset: Asset): Promise<string | undefined> {
-    const fromAsset = extractFormhubUuid(asset)
-    if (fromAsset) return fromAsset
-
-    // Stale v1 fallback — only reached when deployment__uuid is missing on the asset.
-    try {
-      const forms = await getV1Forms()
-      const deploymentUuid = asset.deployment__uuid
-      if (typeof deploymentUuid === 'string' && deploymentUuid.trim()) {
-        const byUuid = forms.find((item) => item.uuid === deploymentUuid)
-        return byUuid?.uuid
-      }
-    } catch {
-      return undefined
-    }
+  function resolveFormhubUuid(asset: Asset): string | undefined {
+    return extractFormhubUuid(asset)
   }
 
   async function resolveFormMeta(asset: Asset, deploymentData: Deployment | null) {
@@ -145,13 +132,12 @@ export function useSubmissionUpload(formUid: MaybeRefOrGetter<string | undefined
           return getAssetXform(assetUid)
         }
       },
-      getV1Forms,
     })
     if (!formId) {
       throw new Error(FORM_ID_RESOLUTION_ERROR)
     }
 
-    const formhubUuid = await resolveFormhubUuid(asset)
+    const formhubUuid = resolveFormhubUuid(asset)
     formMeta.value = {
       assetUid: asset.uid,
       formId,

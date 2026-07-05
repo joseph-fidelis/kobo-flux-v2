@@ -26,8 +26,6 @@ import { RuntimeConfig as UserRuntimeConfig, PublicRuntimeConfig as UserPublicRu
    appName: string,
 
    baseURL: string,
-
-   piniaPluginPersistedstate: any,
   }
 declare module '@nuxt/schema' {
   interface RuntimeConfig extends UserRuntimeConfig {}

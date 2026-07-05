@@ -6,7 +6,6 @@ import type { SidebarProps } from "@/components/ui/sidebar"
 import {
   LayoutDashboard,
   Users,
-  File,
   FormIcon
 } from "lucide-vue-next"
 import {
@@ -32,8 +31,7 @@ const navGroups = [
     items: [
       { title: "Dashboard", url: "/", icon: LayoutDashboard },
       { title: "Forms", url: "/forms", icon: FormIcon },
-      // { title: "Submissions", url: "/submissions", icon: File },
-      // { title: "Users", url: "/users", icon: Users },
+      // { title: "Team", url: "/users", icon: Users },
     ],
   },
 ]

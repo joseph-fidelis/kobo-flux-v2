@@ -33,13 +33,10 @@ import type {
   UpdateValidationStatusPayload,
   ValidationStatus,
   KoboSubmissionPayload,
-  KoboV1FormListItem,
   SubmissionUploadResponse,
 } from "~/lib/models/SurveyData"
 
 const BASE = "/api/v2/assets"
-/** @deprecated v1 removed June 2026 — kept for optional id_string fallback only. */
-const V1_FORMS = "/api/v1/forms.json"
 
 function openRosaSubmissionPath(username: string) {
   return `/api/openrosa/${encodeURIComponent(username)}/submission`
@@ -56,7 +53,7 @@ function openRosaSubmissionPath(username: string) {
  *    in the OpenAPI doc, but `id` does not appear in those URLs. That's a
  *    DRF router metadata quirk, not a real param — omitted here.
  * 2. `files/` create payload is multipart with no fixed schema in the spec.
- *    `createFile` accepts FormData directly; build it at the call site.
+ *    `createAssetFile` accepts FormData directly; build it at the call site.
  */
 export const useSubmissionApi = () => {
   const api = useApi()
@@ -388,10 +385,5 @@ export const useSubmissionApi = () => {
 
     submitSubmission: (username: string, payload: KoboSubmissionPayload) =>
       api.post<SubmissionUploadResponse>(openRosaSubmissionPath(username), payload),
-
-    /**
-     * @deprecated v1 /api/v1/forms.json removed June 2026. Prefer v2 asset metadata.
-     */
-    getV1Forms: () => api.get<KoboV1FormListItem[]>(V1_FORMS),
   }
 }

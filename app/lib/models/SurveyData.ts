@@ -314,9 +314,6 @@ export interface KoboListParams {
     submission: Record<string, unknown>
   }
 
-  /** @deprecated Use {@link KoboSubmissionPayload}. v1 endpoint removed June 2026. */
-  export type KoboV1SubmissionPayload = KoboSubmissionPayload
-
   export interface SubmissionUploadResponse {
     status: number
     data: unknown
@@ -334,14 +331,4 @@ export interface KoboListParams {
     total: number
     succeeded: number
     failed: number
-  }
-
-  /**
-   * @deprecated v1 /api/v1/forms.json removed June 2026. Prefer v2 asset fields
-   * (deployment__uuid, content.settings.id_string) for form metadata.
-   */
-  export interface KoboV1FormListItem {
-    id_string?: string
-    uuid?: string
-    title?: string
   }

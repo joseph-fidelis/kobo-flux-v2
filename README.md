@@ -1,132 +1,165 @@
-# Nuxt 3 + Shadcn-Vue + VeeValidate/Zod Template
+# KoboFlux v2
 
-A production-ready starter template combining Nuxt 3, Shadcn-Vue, and VeeValidate + Zod for type-safe form validation. Dark theme by default.
+A modern, open-source web interface for [KoboToolbox](https://www.kobotoolbox.org/). KoboFlux v2 helps teams browse forms, inspect deployments, export and upload submission data, and manage organization members — all through a clean Nuxt app that talks to Kobo's APIs via a secure server-side proxy.
 
-## Stack
-
-| Layer | Technology |
-|---|---|
-| Framework | Nuxt 3 + Vue 3 |
-| UI Components | Shadcn-Vue (Reka-UI primitives) |
-| Styling | Tailwind CSS v4 |
-| Icons | Lucide Vue Next |
-| Forms | VeeValidate + Zod |
-| State | Pinia + pinia-plugin-persistedstate |
-| Tables | TanStack Vue Table |
-| Charts | ApexCharts / vue3-apexcharts |
-| Toasts | Vue Sonner |
-| Theme | Dark (forced via @nuxtjs/color-mode) |
+> **Note:** KoboFlux is an independent open-source project. It is not affiliated with, endorsed by, or maintained by the KoboToolbox team.
 
 ## Features
 
-- **Shadcn-Vue** components pre-configured with no prefix
-- **Dark theme only** — forced via `@nuxtjs/color-mode` with `preference: 'dark'`
-- **VeeValidate + Zod** — schema-based form validation out of the box
-- **Pinia** with persisted state plugin
-- **TanStack Vue Table** for data-heavy views
-- **useApi composable** — wraps `$fetch` with JWT auth, auto-refresh on 401
-- **Auth middleware** — redirects unauthenticated users to `/auth/login`
-- JWT Bearer token auth via `access_token` + `refresh_token` cookies
+- **Dashboard** — KPI overview and recently modified forms
+- **Forms library** — List, search, and open any survey asset you have access to
+- **Form detail** — Deployment status, collection links, settings, and downloads (JSON, XML, XLSX)
+- **Submissions** — Paginated submission table with validation status and exports (JSON, XML, XLSX)
+- **Bulk upload** — Import rows from an Excel file; headers are validated against Kobo export labels before upload
+- **Team** — Organization members, roles, and pending invites (via `/me` and org APIs)
+- **Secure API proxy** — Your Kobo API token stays on the server; the browser never calls Kobo directly
 
-## Project Structure
+## Tech stack
+
+| Layer | Technology |
+|-------|------------|
+| Framework | [Nuxt 4](https://nuxt.com/) + Vue 3 |
+| UI | [shadcn-vue](https://www.shadcn-vue.com/) (Reka UI primitives) |
+| Styling | Tailwind CSS v4 |
+| Icons | Lucide Vue Next, Nuxt Icon |
+| Tables | TanStack Vue Table |
+| Spreadsheets | SheetJS (`xlsx`) |
+| Server | Nitro (Node) |
+
+## Architecture
 
 ```
-app/
-├── components/        # Shared UI components
-├── composables/
-│   └── util/
-│       └── useApi.ts  # Authenticated fetch wrapper
-├── layouts/           # AdminLayout, AuthLayout
-├── middleware/
-│   └── auth.ts        # Route protection
-├── pages/             # File-based routing
-├── stores/            # Pinia stores
-└── assets/
-    └── css/
-        └── tailwind.css
+Browser  →  Nuxt pages / composables  →  services  →  useApi  →  Nitro proxy  →  KoboToolbox
 ```
 
-## Setup
+- **Pages** (`app/pages/`) — Route-level UI
+- **Composables** (`app/composables/`) — State, data loading, and user actions
+- **Services** (`app/services/`) — Typed wrappers around Kobo API v2 (and OpenRosa upload)
+- **Models** (`app/lib/models/`) — TypeScript types aligned with Kobo responses
+- **Server** (`server/`) — Proxies `/api/*` and `/me/*` to your configured Kobo host
 
-Install dependencies:
+Submission uploads use the **OpenRosa** endpoint `POST /{username}/submission` (not the removed Kobo v1 `submissions.json` API).
+
+See [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) for more detail.
+
+## Requirements
+
+- **Node.js** 20+
+- **pnpm** 10+ (recommended; see `packageManager` in `package.json`)
+- A [KoboToolbox](https://www.kobotoolbox.org/) account with an API token
+
+## Quick start
+
+### 1. Clone and install
 
 ```bash
+git clone https://github.com/your-org/kobo-flux-v2.git
+cd kobo-flux-v2
 pnpm install
 ```
 
-Copy the environment file and configure:
+### 2. Configure environment
 
 ```bash
 cp .env.example .env
 ```
 
-Key env var:
+Edit `.env`:
 
 ```env
-NUXT_PUBLIC_API_BASE=http://localhost:5000
+# Required — create at https://kf.kobotoolbox.org/token/ (or your server equivalent)
+NUXT_KOBO_API_TOKEN=your_token_here
+
+# Kobo host — use kf.kobotoolbox.org (global) or eu.kobotoolbox.org (EU)
+NUXT_KOBO_BASE_URL=https://kf.kobotoolbox.org
+
+# Shown in the sidebar
+NUXT_PUBLIC_APP_NAME=KoboFlux
+
+# Leave empty — API calls use same-origin Nitro proxy routes
+NUXT_PUBLIC_BASE_URL=
 ```
 
-## Development
+### 3. Run locally
 
 ```bash
 pnpm dev
 ```
 
-Runs on `http://localhost:3000`.
+Open [http://localhost:3000](http://localhost:3000).
 
-## Production
+### 4. Production build
 
 ```bash
 pnpm build
 pnpm preview
 ```
 
-## useApi Composable
+Deploy the `.output` directory to any Node-compatible host (Nitro `node-server` preset).
 
-Wraps `$fetch` with automatic JWT injection and token refresh on 401:
+## Environment variables
 
-```ts
-const { get, post, put, patch, delete: del, useFetch } = useApi()
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `NUXT_KOBO_API_TOKEN` | Yes | Server-only Kobo API token. Never exposed to the client. |
+| `NUXT_KOBO_BASE_URL` | No | Kobo server base URL. Default: `https://kf.kobotoolbox.org` |
+| `NUXT_PUBLIC_APP_NAME` | No | Application name in the UI. Default: `KoboFlux` |
+| `NUXT_PUBLIC_BASE_URL` | No | Optional API base for `useApi`. Leave empty for same-origin proxy. |
 
-// GET with query params
-const data = await get('/users/', { page: 1, size: 20 })
+## Uploading submissions
 
-// POST
-const result = await post('/auth/login', { username, password })
+1. Open a **deployed** form → **Upload data**
+2. Download the **template** (column headers match Kobo label export)
+3. Fill rows in Excel and upload
+4. Each row is posted individually via OpenRosa; results appear in the upload log
 
-// Use with Nuxt's useFetch (SSR-compatible)
-const { data, pending } = useFetch('/locations/')
-```
+The form must be deployed and active. The app resolves `id_string` from deployment metadata, content settings, or XForm XML.
 
-## Form Validation Pattern
-
-```vue
-<script setup lang="ts">
-import { useForm } from 'vee-validate'
-import { toTypedSchema } from '@vee-validate/zod'
-import { z } from 'zod'
-
-const schema = toTypedSchema(z.object({
-  name: z.string().min(1, 'Required'),
-  email: z.string().email(),
-}))
-
-const { handleSubmit, errors } = useForm({ validationSchema: schema })
-const onSubmit = handleSubmit(values => { /* submit */ })
-</script>
-```
-
-## Dialog / Modal Pattern
-
-All dialogs follow a consistent structure — see `CLAUDE.md` for the full spec including script pattern, field styling, and footer button labels.
-
-## Design Tokens
+## Project structure
 
 ```
-Page background:    #0A0E1A
-Card background:    #161b27
-Row background:     #1D293D
-Default border:     #1e2535
-Primary accent:     blue-500 / blue-600
-Border radius:      0.625rem
+app/
+├── components/
+│   ├── app-specific/     # App shell (sidebar, nav)
+│   └── ui/               # shadcn-vue components
+├── composables/          # Feature logic (forms, upload, dashboard, …)
+├── layouts/              # AdminLayout
+├── lib/
+│   ├── helpers/          # Export, upload, id resolution, xlsx
+│   └── models/           # TypeScript API types
+├── pages/                # File-based routes
+└── services/             # Kobo API client layer
+
+server/
+├── routes/
+│   ├── api/[...path].ts           # Kobo v2 API proxy
+│   ├── api/openrosa/...           # Submission upload
+│   └── me/[[...path]].ts          # Current user proxy
+└── utils/proxy-kobo.ts            # Shared proxy helper
 ```
+
+## Scripts
+
+| Command | Description |
+|---------|-------------|
+| `pnpm dev` | Start development server |
+| `pnpm build` | Production build |
+| `pnpm preview` | Preview production build |
+| `pnpm generate` | Static site generation (if applicable) |
+
+## Contributing
+
+Contributions are welcome. Please read [CONTRIBUTING.md](./CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) before opening a pull request.
+
+## Security
+
+To report a vulnerability, see [SECURITY.md](./SECURITY.md). **Do not** open public issues for security problems.
+
+## License
+
+This project is licensed under the [MIT License](./LICENSE).
+
+## Acknowledgements
+
+- [KoboToolbox](https://www.kobotoolbox.org/) for the data collection platform and APIs
+- [shadcn-vue](https://www.shadcn-vue.com/) for the component system

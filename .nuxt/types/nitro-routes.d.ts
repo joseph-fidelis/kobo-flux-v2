@@ -9,9 +9,6 @@ declare module "nitropack/types" {
     '/api/openrosa/:username/submission': {
       'post': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/api/openrosa/[username]/submission.post').default>>>>
     }
-    '/api/v1/submissions.json': {
-      'post': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/api/v1/submissions.json.post').default>>>>
-    }
     '/api/v2/assets/:uid/exports/:exportUid/download': {
       'get': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/api/v2/assets/[uid]/exports/[exportUid]/download.get').default>>>>
     }

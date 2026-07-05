@@ -1,9 +1,8 @@
 import type { AssetContent } from '~/lib/models/FormContent'
 import type { Asset, Deployment } from '~/lib/models/ProjectsLibrary'
-import type { KoboV1FormListItem } from '~/lib/models/SurveyData'
 
 export const FORM_ID_RESOLUTION_ERROR =
-  'Could not resolve form id_string. Checked deployment identifiers, form content settings, XForm XML, and v1 forms list. Redeploy the form or verify the asset has settings.id_string in Kobo.'
+  'Could not resolve form id_string. Checked deployment identifiers, form content settings, and XForm XML. Redeploy the form or verify the asset has settings.id_string in Kobo.'
 
 /** Strip HTML preview wrapper when /xform/ returns syntax-highlighted HTML instead of raw XML. */
 function extractXmlPayload(text: string): string {
@@ -42,7 +41,7 @@ export function parseFormIdFromXform(xml: string): string | undefined {
   return undefined
 }
 
-/** Strip KC/KPI deployment URLs down to the bare id_string used by v1 POST. */
+/** Strip KC/KPI deployment URLs down to the bare id_string used in OpenRosa submissions. */
 export function normalizeFormId(raw: string): string | undefined {
   const trimmed = raw.trim()
   if (!trimmed) return undefined
@@ -96,8 +95,6 @@ export function resolveFormIdFromAsset(
 export interface ResolveFormIdOptions {
   getAssetContent?: (assetUid: string) => Promise<AssetContent>
   getAssetXform?: (assetUid: string) => Promise<string>
-  /** @deprecated v1 forms list removed June 2026 — last-resort id_string lookup only. */
-  getV1Forms?: () => Promise<KoboV1FormListItem[]>
 }
 
 export async function resolveFormIdWithFallbacks(
@@ -123,25 +120,6 @@ export async function resolveFormIdWithFallbacks(
       const xform = await options.getAssetXform(asset.uid)
       const fromXform = parseFormIdFromXform(xform)
       if (fromXform) return fromXform
-    } catch {
-      // fall through
-    }
-  }
-
-  if (options.getV1Forms) {
-    // Stale v1 fallback — /api/v1/forms.json is removed on KPI/KC (June 2026).
-    try {
-      const forms = await options.getV1Forms()
-      const deploymentUuid = asset.deployment__uuid
-      if (typeof deploymentUuid === 'string' && deploymentUuid.trim()) {
-        const byUuid = forms.find((form) => form.uuid === deploymentUuid)
-        if (byUuid?.id_string) return pickFormId(byUuid.id_string)
-      }
-
-      const byTitle = forms.find(
-        (form) => form.title === asset.name && typeof form.id_string === 'string',
-      )
-      if (byTitle?.id_string) return pickFormId(byTitle.id_string)
     } catch {
       // fall through
     }

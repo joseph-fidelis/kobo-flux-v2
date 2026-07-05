@@ -211,11 +211,11 @@ export const Tabs: typeof import("../app/components/ui/tabs/index")['Tabs']
 export const TabsContent: typeof import("../app/components/ui/tabs/index")['TabsContent']
 export const TabsList: typeof import("../app/components/ui/tabs/index")['TabsList']
 export const TabsTrigger: typeof import("../app/components/ui/tabs/index")['TabsTrigger']
+export const Textarea: typeof import("../app/components/ui/textarea/index")['Textarea']
 export const Tooltip: typeof import("../app/components/ui/tooltip/index")['Tooltip']
 export const TooltipContent: typeof import("../app/components/ui/tooltip/index")['TooltipContent']
 export const TooltipProvider: typeof import("../app/components/ui/tooltip/index")['TooltipProvider']
 export const TooltipTrigger: typeof import("../app/components/ui/tooltip/index")['TooltipTrigger']
-export const Textarea: typeof import("../app/components/ui/textarea/index")['Textarea']
 export const ColorScheme: typeof import("../node_modules/.pnpm/@nuxtjs+color-mode@4.0.0_magicast@0.5.2/node_modules/@nuxtjs/color-mode/dist/runtime/component.vue")['default']
 export const Icon: typeof import("../node_modules/.pnpm/@nuxt+icon@2.1.0_magicast@0.5.2_vite@7.3.1_jiti@2.6.1_lightningcss@1.31.1_terser@5.46.0_926721a1675078e34d54c6faaaeb929a/node_modules/@nuxt/icon/dist/runtime/components/index")['default']
 export const NuxtPage: typeof import("../node_modules/.pnpm/nuxt@4.4.2_@babel+core@7.29.0_@babel+plugin-syntax-jsx@7.28.6_@babel+core@7.29.0__@parc_5a195fceced10ac9fea902dd8b70b305/node_modules/nuxt/dist/pages/runtime/page")['default']
@@ -426,11 +426,11 @@ export const LazyTabs: LazyComponent<typeof import("../app/components/ui/tabs/in
 export const LazyTabsContent: LazyComponent<typeof import("../app/components/ui/tabs/index")['TabsContent']>
 export const LazyTabsList: LazyComponent<typeof import("../app/components/ui/tabs/index")['TabsList']>
 export const LazyTabsTrigger: LazyComponent<typeof import("../app/components/ui/tabs/index")['TabsTrigger']>
+export const LazyTextarea: LazyComponent<typeof import("../app/components/ui/textarea/index")['Textarea']>
 export const LazyTooltip: LazyComponent<typeof import("../app/components/ui/tooltip/index")['Tooltip']>
 export const LazyTooltipContent: LazyComponent<typeof import("../app/components/ui/tooltip/index")['TooltipContent']>
 export const LazyTooltipProvider: LazyComponent<typeof import("../app/components/ui/tooltip/index")['TooltipProvider']>
 export const LazyTooltipTrigger: LazyComponent<typeof import("../app/components/ui/tooltip/index")['TooltipTrigger']>
-export const LazyTextarea: LazyComponent<typeof import("../app/components/ui/textarea/index")['Textarea']>
 export const LazyColorScheme: LazyComponent<typeof import("../node_modules/.pnpm/@nuxtjs+color-mode@4.0.0_magicast@0.5.2/node_modules/@nuxtjs/color-mode/dist/runtime/component.vue")['default']>
 export const LazyIcon: LazyComponent<typeof import("../node_modules/.pnpm/@nuxt+icon@2.1.0_magicast@0.5.2_vite@7.3.1_jiti@2.6.1_lightningcss@1.31.1_terser@5.46.0_926721a1675078e34d54c6faaaeb929a/node_modules/@nuxt/icon/dist/runtime/components/index")['default']>
 export const LazyNuxtPage: LazyComponent<typeof import("../node_modules/.pnpm/nuxt@4.4.2_@babel+core@7.29.0_@babel+plugin-syntax-jsx@7.28.6_@babel+core@7.29.0__@parc_5a195fceced10ac9fea902dd8b70b305/node_modules/nuxt/dist/pages/runtime/page")['default']>

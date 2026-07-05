@@ -1,24 +1,11 @@
 /**
  * useApi composable
  *
- * A thin wrapper around Nuxt's $fetch / useFetch that:
- *  - Injects the base URL from runtime config
- *  - Attaches the auth token from the auth store / cookie
- *  - Normalises error responses into a consistent shape
- *  - Exposes typed helpers: get, post, put, patch, delete
- *
- * Usage:
- *   const api = useApi()
- *
- *   // Plain async call (inside actions, event handlers, etc.)
- *   const user = await api.post<UserResponse>("/users", payload)
- *
- *   // Reactive call (inside setup, auto-refreshes on param change)
- *   const { data, pending, error, refresh } = api.useFetch<User[]>("/users")
+ * Thin wrapper around Nuxt's $fetch that normalises errors and exposes typed
+ * HTTP helpers. Requests go to same-origin Nitro proxy routes (/api/*, /me/*).
  */
 
 import { useRuntimeConfig } from "#app";
-import type { UseFetchOptions } from "nuxt/app";
 import type { FetchError } from "ofetch";
 
 type QueryParams = Record<string, string | number | boolean | undefined>;
@@ -129,27 +116,11 @@ export function useApi() {
     return request<T>("DELETE", path, options);
   }
 
-  function useFetchApi<T extends Record<string, any> = Record<string, any>>(
-    path: string,
-    options: UseFetchOptions<T> = {} as UseFetchOptions<T>,
-  ) {
-    const { headers, method, ...rest } = options;
-    const fetchMethod = typeof method === "string" ? method : "GET";
-
-    // @ts-expect-error Nuxt's useFetch types don't allow generic headers, but we know this works
-    return useFetch<T>(path, {
-      baseURL,
-      ...rest,
-      headers: buildHeaders(headers as HeadersInit, fetchMethod),
-    });
-  }
-
   return {
     get,
     post,
     put,
     patch,
     delete: del,
-    useFetch: useFetchApi,
   };
 }

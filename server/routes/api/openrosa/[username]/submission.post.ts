@@ -7,8 +7,6 @@ interface KoboSubmissionPayload {
 
 /**
  * Proxy a single OpenRosa JSON submission to Kobo.
- * Replaces the removed KC v1 endpoint: POST /api/v1/submissions.json
- *
  * Upstream: POST {koboBaseUrl}/{username}/submission
  *
  * Always responds with HTTP 200 and { status, data } so batch uploads can handle per-row failures.
