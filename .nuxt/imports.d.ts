@@ -32,6 +32,7 @@ export { setInterval } from '#app/compat/interval';
 export { definePageMeta, PageMeta } from '#app/composables/pages';
 export { defineLazyHydrationComponent } from '#app/composables/lazy-hydration';
 export { useAssetStatus } from '../app/composables/useAssetStatus';
+export { useDashboard, DashboardKpis } from '../app/composables/useDashboard';
 export { useFormatDate } from '../app/composables/useFormatDate';
 export { useValidationStatus } from '../app/composables/useValidationStatus';
 export { autocompleteUtil as tw } from '../node_modules/.pnpm/@nuxtjs+tailwindcss@7.0.0-beta.1_magicast@0.5.2_vite@7.3.1_jiti@2.6.1_lightningcss@1.31.1_terser@5.46.0_yaml@2.8.2_/node_modules/@nuxtjs/tailwindcss/dist/runtime/utils';

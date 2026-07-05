@@ -163,24 +163,76 @@
         </Card>
       </div>
 
-      <Card v-if="settingsDescription || settingsSector || settingsCountry">
+      <Card v-if="hasDeploymentLinks">
+        <CardHeader>
+          <CardTitle>Collection links</CardTitle>
+          <CardDescription>Enketo web form URLs for data collection</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ul class="divide-y rounded-lg border">
+            <li
+              v-for="link in deploymentLinkEntries"
+              :key="link.key"
+              class="flex flex-col gap-1 px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
+            >
+              <span class="text-sm font-medium">{{ link.label }}</span>
+              <a
+                :href="link.url"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1.5 font-mono text-xs text-primary hover:underline break-all sm:max-w-[60%] sm:justify-end"
+              >
+                {{ link.url }}
+                <ExternalLink class="h-3.5 w-3.5 shrink-0" />
+              </a>
+            </li>
+          </ul>
+        </CardContent>
+      </Card>
+
+      <Card v-if="assetSettings.hasContent">
         <CardHeader>
           <CardTitle>Settings</CardTitle>
           <CardDescription>Project metadata from the form settings</CardDescription>
         </CardHeader>
         <CardContent>
           <dl class="grid gap-4 sm:grid-cols-2">
-            <div v-if="settingsDescription" class="sm:col-span-2">
+            <div v-if="assetSettings.description" class="sm:col-span-2">
               <dt class="text-sm text-muted-foreground">Description</dt>
-              <dd class="mt-1 text-sm font-medium">{{ settingsDescription }}</dd>
+              <dd class="mt-1 text-sm font-medium">{{ assetSettings.description }}</dd>
             </div>
-            <div v-if="settingsSector">
+            <div v-if="assetSettings.sector">
               <dt class="text-sm text-muted-foreground">Sector</dt>
-              <dd class="mt-1 text-sm font-medium">{{ settingsSector }}</dd>
+              <dd class="mt-1 text-sm font-medium">{{ assetSettings.sector }}</dd>
             </div>
-            <div v-if="settingsCountry">
+            <div v-if="assetSettings.countries.length">
               <dt class="text-sm text-muted-foreground">Country</dt>
-              <dd class="mt-1 text-sm font-medium">{{ settingsCountry }}</dd>
+              <dd class="mt-1 text-sm font-medium">{{ assetSettings.countries.join(', ') }}</dd>
+            </div>
+            <div v-if="assetSettings.organization">
+              <dt class="text-sm text-muted-foreground">Organization</dt>
+              <dd class="mt-1 text-sm font-medium">{{ assetSettings.organization }}</dd>
+            </div>
+            <div v-if="assetSettings.collectsPii">
+              <dt class="text-sm text-muted-foreground">Collects PII</dt>
+              <dd class="mt-1 text-sm font-medium">{{ assetSettings.collectsPii }}</dd>
+            </div>
+            <div v-if="assetSettings.operationalPurpose">
+              <dt class="text-sm text-muted-foreground">Operational purpose</dt>
+              <dd class="mt-1 text-sm font-medium">{{ assetSettings.operationalPurpose }}</dd>
+            </div>
+            <div v-if="assetSettings.dataTableColumns.length" class="sm:col-span-2">
+              <dt class="text-sm text-muted-foreground">Data table columns</dt>
+              <dd class="mt-2 flex flex-wrap gap-1.5">
+                <Badge
+                  v-for="column in assetSettings.dataTableColumns"
+                  :key="column"
+                  variant="secondary"
+                  class="font-mono text-xs"
+                >
+                  {{ column }}
+                </Badge>
+              </dd>
             </div>
           </dl>
         </CardContent>
@@ -200,7 +252,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
-import { ArrowLeft, Download, Upload } from 'lucide-vue-next'
+import { ArrowLeft, Download, ExternalLink, Upload } from 'lucide-vue-next'
 import { useFormDetail } from '~/composables/forms/useFormDetail'
 
 definePageMeta({ layout: 'admin-layout' })
@@ -220,9 +272,9 @@ const {
   downloadFormXml,
   downloadFormXlsx,
   formatOwner,
-  settingsDescription,
-  settingsSector,
-  settingsCountry,
+  assetSettings,
+  deploymentLinkEntries,
+  hasDeploymentLinks,
 } = useFormDetail(uid)
 
 const { formatDateTime } = useFormatDate()

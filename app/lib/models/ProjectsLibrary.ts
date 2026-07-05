@@ -85,6 +85,9 @@ export interface Asset {
   deployment__identifier?: string
   deployment__submission_count?: number
   deployment_status?: AssetDeploymentStatus
+  /** Enketo collection URLs when deployed (Kobo API field name uses double underscores). */
+  deployment__links?: DeploymentLinks
+  embeds?: Record<string, unknown>
   has_deployment?: boolean
   version_id?: string
   tag_string?: string
@@ -94,6 +97,31 @@ export interface Asset {
 
 export interface AssetRetrieveParams {
   format?: string
+}
+
+export interface DeploymentLinks {
+  url?: string
+  single_url?: string
+  single_once_url?: string
+  offline_url?: string
+  preview_url?: string
+  iframe_url?: string
+  single_iframe_url?: string
+  single_once_iframe_url?: string
+}
+
+export interface AssetSettings {
+  sector?: { label?: string; value?: string } | string
+  country?: Array<{ label?: string; value?: string }> | string
+  description?: string
+  collects_pii?: boolean | string | null
+  organization?: string
+  country_codes?: string[]
+  operational_purpose?: string | null
+  'data-table'?: {
+    'selected-columns'?: string[]
+  }
+  [key: string]: unknown
 }
 
 // ---------------------------------------------------------------------------
