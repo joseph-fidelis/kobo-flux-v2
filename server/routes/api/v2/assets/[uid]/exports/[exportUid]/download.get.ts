@@ -1,30 +1,23 @@
 import type { ExportTask } from "~/lib/models/SurveyData"
 import { createError, setResponseHeaders } from "h3"
+import { requireKoboCredentials } from "../../../../../../../utils/kobo-credentials"
 
 /**
  * Download a completed async export file server-side (result URLs require auth).
  */
 export default defineEventHandler(async (event) => {
-  const config = useRuntimeConfig()
+  const { token, baseUrl } = requireKoboCredentials(event)
   const assetUid = getRouterParam(event, "uid")
   const exportUid = getRouterParam(event, "exportUid")
-
-  if (!config.koboApiToken) {
-    throw createError({
-      statusCode: 500,
-      statusMessage: "Kobo API token is not configured (set NUXT_KOBO_API_TOKEN)",
-    })
-  }
 
   if (!assetUid || !exportUid) {
     throw createError({ statusCode: 400, statusMessage: "Missing asset or export uid" })
   }
 
-  const base = config.koboBaseUrl.replace(/\/$/, "")
-  const authHeaders = { Authorization: `Token ${config.koboApiToken}` }
+  const authHeaders = { Authorization: `Token ${token}` }
 
   const task = await $fetch<ExportTask>(
-    `${base}/api/v2/assets/${assetUid}/exports/${exportUid}/`,
+    `${baseUrl}/api/v2/assets/${assetUid}/exports/${exportUid}/`,
     { headers: authHeaders },
   )
 

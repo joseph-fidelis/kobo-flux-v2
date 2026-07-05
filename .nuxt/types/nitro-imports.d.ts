@@ -1,6 +1,8 @@
 declare global {
   const H3Error: typeof import('../../node_modules/.pnpm/h3@1.15.6/node_modules/h3').H3Error
   const H3Event: typeof import('../../node_modules/.pnpm/h3@1.15.6/node_modules/h3').H3Event
+  const KOBO_COOKIE_BASE_URL: typeof import('../../server/utils/kobo-credentials').KOBO_COOKIE_BASE_URL
+  const KOBO_COOKIE_TOKEN: typeof import('../../server/utils/kobo-credentials').KOBO_COOKIE_TOKEN
   const __buildAssetsURL: typeof import('../../node_modules/.pnpm/@nuxt+nitro-server@4.4.2_@babel+core@7.29.0_db0@0.3.4_ioredis@5.10.0_magicast@0.5.2_nux_65b2d303d289722d7fd42c9ef9e745ca/node_modules/@nuxt/nitro-server/dist/runtime/utils/paths').buildAssetsURL
   const __publicAssetsURL: typeof import('../../node_modules/.pnpm/@nuxt+nitro-server@4.4.2_@babel+core@7.29.0_db0@0.3.4_ioredis@5.10.0_magicast@0.5.2_nux_65b2d303d289722d7fd42c9ef9e745ca/node_modules/@nuxt/nitro-server/dist/runtime/utils/paths').publicAssetsURL
   const appendCorsHeaders: typeof import('../../node_modules/.pnpm/h3@1.15.6/node_modules/h3').appendCorsHeaders
@@ -48,6 +50,7 @@ declare global {
   const getCookie: typeof import('../../node_modules/.pnpm/h3@1.15.6/node_modules/h3').getCookie
   const getHeader: typeof import('../../node_modules/.pnpm/h3@1.15.6/node_modules/h3').getHeader
   const getHeaders: typeof import('../../node_modules/.pnpm/h3@1.15.6/node_modules/h3').getHeaders
+  const getKoboSettingsStatus: typeof import('../../server/utils/kobo-credentials').getKoboSettingsStatus
   const getMethod: typeof import('../../node_modules/.pnpm/h3@1.15.6/node_modules/h3').getMethod
   const getProxyRequestHeaders: typeof import('../../node_modules/.pnpm/h3@1.15.6/node_modules/h3').getProxyRequestHeaders
   const getQuery: typeof import('../../node_modules/.pnpm/h3@1.15.6/node_modules/h3').getQuery
@@ -80,6 +83,7 @@ declare global {
   const isPreflightRequest: typeof import('../../node_modules/.pnpm/h3@1.15.6/node_modules/h3').isPreflightRequest
   const isStream: typeof import('../../node_modules/.pnpm/h3@1.15.6/node_modules/h3').isStream
   const isWebResponse: typeof import('../../node_modules/.pnpm/h3@1.15.6/node_modules/h3').isWebResponse
+  const koboSessionCookieOptions: typeof import('../../server/utils/kobo-credentials').koboSessionCookieOptions
   const lazyEventHandler: typeof import('../../node_modules/.pnpm/h3@1.15.6/node_modules/h3').lazyEventHandler
   const nitroPlugin: typeof import('../../node_modules/.pnpm/nitropack@2.13.1/node_modules/nitropack/dist/runtime/internal/plugin').nitroPlugin
   const parseCookies: typeof import('../../node_modules/.pnpm/h3@1.15.6/node_modules/h3').parseCookies
@@ -92,6 +96,8 @@ declare global {
   const readRawBody: typeof import('../../node_modules/.pnpm/h3@1.15.6/node_modules/h3').readRawBody
   const readValidatedBody: typeof import('../../node_modules/.pnpm/h3@1.15.6/node_modules/h3').readValidatedBody
   const removeResponseHeader: typeof import('../../node_modules/.pnpm/h3@1.15.6/node_modules/h3').removeResponseHeader
+  const requireKoboCredentials: typeof import('../../server/utils/kobo-credentials').requireKoboCredentials
+  const resolveKoboCredentials: typeof import('../../server/utils/kobo-credentials').resolveKoboCredentials
   const runTask: typeof import('../../node_modules/.pnpm/nitropack@2.13.1/node_modules/nitropack/dist/runtime/internal/task').runTask
   const sanitizeStatusCode: typeof import('../../node_modules/.pnpm/h3@1.15.6/node_modules/h3').sanitizeStatusCode
   const sanitizeStatusMessage: typeof import('../../node_modules/.pnpm/h3@1.15.6/node_modules/h3').sanitizeStatusMessage
@@ -126,6 +132,7 @@ declare global {
   const useRuntimeConfig: typeof import('../../node_modules/.pnpm/nitropack@2.13.1/node_modules/nitropack/dist/runtime/internal/config').useRuntimeConfig
   const useSession: typeof import('../../node_modules/.pnpm/h3@1.15.6/node_modules/h3').useSession
   const useStorage: typeof import('../../node_modules/.pnpm/nitropack@2.13.1/node_modules/nitropack/dist/runtime/internal/storage').useStorage
+  const validateKoboCredentials: typeof import('../../server/utils/kobo-credentials').validateKoboCredentials
   const writeEarlyHints: typeof import('../../node_modules/.pnpm/h3@1.15.6/node_modules/h3').writeEarlyHints
 }
 // for type re-export
@@ -133,6 +140,9 @@ declare global {
   // @ts-ignore
   export type { EventHandler, EventHandlerRequest, EventHandlerResponse, EventHandlerObject, H3EventContext } from '../../node_modules/.pnpm/h3@1.15.6/node_modules/h3'
   import('../../node_modules/.pnpm/h3@1.15.6/node_modules/h3')
+  // @ts-ignore
+  export type { KoboCredentials, KoboSettingsStatus } from '../../server/utils/kobo-credentials'
+  import('../../server/utils/kobo-credentials')
 }
 export { H3Event, H3Error, appendCorsHeaders, appendCorsPreflightHeaders, appendHeader, appendHeaders, appendResponseHeader, appendResponseHeaders, assertMethod, callNodeListener, clearResponseHeaders, clearSession, createApp, createAppEventHandler, createError, createEvent, createEventStream, createRouter, defaultContentType, defineEventHandler, defineLazyEventHandler, defineNodeListener, defineNodeMiddleware, defineRequestMiddleware, defineResponseMiddleware, defineWebSocket, defineWebSocketHandler, deleteCookie, dynamicEventHandler, eventHandler, fetchWithEvent, fromNodeMiddleware, fromPlainHandler, fromWebHandler, getCookie, getHeader, getHeaders, getMethod, getProxyRequestHeaders, getQuery, getRequestFingerprint, getRequestHeader, getRequestHeaders, getRequestHost, getRequestIP, getRequestPath, getRequestProtocol, getRequestURL, getRequestWebStream, getResponseHeader, getResponseHeaders, getResponseStatus, getResponseStatusText, getRouterParam, getRouterParams, getSession, getValidatedQuery, getValidatedRouterParams, handleCacheHeaders, handleCors, isCorsOriginAllowed, isError, isEvent, isEventHandler, isMethod, isPreflightRequest, isStream, isWebResponse, lazyEventHandler, parseCookies, promisifyNodeListener, proxyRequest, readBody, readFormData, readMultipartFormData, readRawBody, readValidatedBody, removeResponseHeader, sanitizeStatusCode, sanitizeStatusMessage, sealSession, send, sendError, sendIterable, sendNoContent, sendProxy, sendRedirect, sendStream, sendWebResponse, serveStatic, setCookie, setHeader, setHeaders, setResponseHeader, setResponseHeaders, setResponseStatus, splitCookiesString, toEventHandler, toNodeListener, toPlainHandler, toWebHandler, toWebRequest, unsealSession, updateSession, useBase, useSession, writeEarlyHints } from 'h3';
 export { useNitroApp } from 'nitropack/runtime/internal/app';
@@ -148,4 +158,5 @@ export { defineTask, runTask } from 'nitropack/runtime/internal/task';
 export { defineNitroErrorHandler } from 'nitropack/runtime/internal/error/utils';
 export { buildAssetsURL as __buildAssetsURL, publicAssetsURL as __publicAssetsURL } from '/home/sofrosyn/Documents/Personal/kobo-flux-v2/node_modules/.pnpm/@nuxt+nitro-server@4.4.2_@babel+core@7.29.0_db0@0.3.4_ioredis@5.10.0_magicast@0.5.2_nux_65b2d303d289722d7fd42c9ef9e745ca/node_modules/@nuxt/nitro-server/dist/runtime/utils/paths';
 export { defineAppConfig } from '/home/sofrosyn/Documents/Personal/kobo-flux-v2/node_modules/.pnpm/@nuxt+nitro-server@4.4.2_@babel+core@7.29.0_db0@0.3.4_ioredis@5.10.0_magicast@0.5.2_nux_65b2d303d289722d7fd42c9ef9e745ca/node_modules/@nuxt/nitro-server/dist/runtime/utils/config';
+export { KOBO_COOKIE_TOKEN, KOBO_COOKIE_BASE_URL, resolveKoboCredentials, requireKoboCredentials, getKoboSettingsStatus, koboSessionCookieOptions, validateKoboCredentials } from '/home/sofrosyn/Documents/Personal/kobo-flux-v2/server/utils/kobo-credentials';
 export { proxyToKobo } from '/home/sofrosyn/Documents/Personal/kobo-flux-v2/server/utils/proxy-kobo';

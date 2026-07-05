@@ -1,16 +1,9 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
-
-const route = useRoute()
 import type { SidebarProps } from "@/components/ui/sidebar"
-import {
-  LayoutDashboard,
-  Users,
-  FormIcon
-} from "lucide-vue-next"
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupLabel,
   SidebarHeader,
@@ -20,10 +13,22 @@ import {
   SidebarRail,
   SidebarSeparator,
 } from "@/components/ui/sidebar"
+import {
+  FormIcon,
+  LayoutDashboard,
+  Settings
+} from "lucide-vue-next"
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
 
 const props = defineProps<SidebarProps>()
 
 const { public: { appName } } = useRuntimeConfig()
+
+const buyMeACoffeeUrl = 'https://www.buymeacoffee.com/charmides'
+const buyMeACoffeeButtonSrc =
+  'https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=☕&slug=charmides&button_colour=5F7FFF&font_colour=ffffff&font_family=Lato&outline_colour=000000&coffee_colour=FFDD00'
 
 const navGroups = [
   {
@@ -31,7 +36,7 @@ const navGroups = [
     items: [
       { title: "Dashboard", url: "/", icon: LayoutDashboard },
       { title: "Forms", url: "/forms", icon: FormIcon },
-      // { title: "Team", url: "/users", icon: Users },
+      { title: "Settings", url: "/settings", icon: Settings },
     ],
   },
 ]
@@ -43,11 +48,8 @@ function isNavActive(url: string) {
 </script>
 
 <template>
-  <Sidebar
-    v-bind="props"
-    collapsible="icon"
-    class="*:data-[sidebar=sidebar]:bg-background *:data-[sidebar=sidebar]:border-r *:data-[sidebar=sidebar]:border-border *:data-[sidebar=sidebar]:w-65 *:data-[sidebar=sidebar]:overflow-x-hidden"
-  >
+  <Sidebar v-bind="props" collapsible="icon"
+    class="*:data-[sidebar=sidebar]:bg-background *:data-[sidebar=sidebar]:border-r *:data-[sidebar=sidebar]:border-border *:data-[sidebar=sidebar]:w-65 *:data-[sidebar=sidebar]:overflow-x-hidden">
     <!-- Header / Logo -->
     <SidebarHeader class="px-3 pt-4 pb-3">
       <SidebarMenu>
@@ -73,43 +75,47 @@ function isNavActive(url: string) {
 
         <SidebarGroup class="py-2 px-0">
           <SidebarGroupLabel
-            class="text-[10.5px]! font-bold! tracking-[0.8px]! text-muted-foreground! uppercase! px-2 pb-1.5 group-data-[collapsible=icon]/sidebar-wrapper:hidden"
-          >
+            class="text-[10.5px]! font-bold! tracking-[0.8px]! text-muted-foreground! uppercase! px-2 pb-1.5 group-data-[collapsible=icon]/sidebar-wrapper:hidden">
             {{ group.label }}
           </SidebarGroupLabel>
 
           <SidebarMenu>
             <SidebarMenuItem v-for="item in group.items" :key="item.title">
-              <SidebarMenuButton
-                  as-child
-                  :class="isNavActive(item.url) ? 'bg-[#2B7FFF1A]! text-blue-500' : ''"
-                  class="p-0! h-auto! px-3 py-3 hover:bg-card! border-border"
-                >
-               <NuxtLink
-                  :to="item.url"
-                  :class="[
-                    'flex items-center gap-3 px-4 h-10 min-h-10 w-full rounded-sm no-underline hover:text-foreground',
-                    isNavActive(item.url) ? 'text-blue-500' : 'text-muted-foreground'
-                  ]"
-                >
-                  <component
-                    :is="item.icon"
-                    class="w-4.25 h-4.25 shrink-0 ml-1.25"
-                    style="stroke-width: 1.8"
-                  />
-                  <span class="text-sm font-medium group-data-[collapsible=icon]/sidebar-wrapper:hidden">{{ item.title }}</span>
+              <SidebarMenuButton as-child :class="isNavActive(item.url) ? 'bg-[#2B7FFF1A]! text-blue-500' : ''"
+                class="p-0! h-auto! px-3 py-3 hover:bg-card! border-border">
+                <NuxtLink :to="item.url" :class="[
+                  'flex items-center gap-3 px-4 h-10 min-h-10 w-full rounded-sm no-underline hover:text-foreground',
+                  isNavActive(item.url) ? 'text-blue-500' : 'text-muted-foreground'
+                ]">
+                  <component :is="item.icon" class="w-4.25 h-4.25 shrink-0 ml-1.25" style="stroke-width: 1.8" />
+                  <span class="text-sm font-medium group-data-[collapsible=icon]/sidebar-wrapper:hidden">{{ item.title
+                    }}</span>
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroup>
 
-        <SidebarSeparator
-          v-if="gi < navGroups.length - 1"
-          class="bg-muted! mx-2! group-data-[collapsible=icon]/sidebar-wrapper:hidden"
-        />
+        <SidebarSeparator v-if="gi < navGroups.length - 1"
+          class="bg-muted! mx-2! group-data-[collapsible=icon]/sidebar-wrapper:hidden" />
       </template>
     </SidebarContent>
+
+    <SidebarFooter class="px-3 pb-4 pt-2 mt-auto group-data-[collapsible=icon]/sidebar-wrapper:hidden">
+      <a
+        :href="buyMeACoffeeUrl"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="block transition-opacity hover:opacity-90"
+      >
+        <img
+          :src="buyMeACoffeeButtonSrc"
+          alt="Buy me a coffee"
+          class="w-full h-auto"
+          loading="lazy"
+        >
+      </a>
+    </SidebarFooter>
 
     <SidebarRail />
   </Sidebar>

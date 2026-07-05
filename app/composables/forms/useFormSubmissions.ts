@@ -20,6 +20,7 @@ export function useFormSubmissions(formUid: MaybeRefOrGetter<string | undefined>
   const submissionApi = useSubmissionApi()
   const { getSubmissions, getSubmissionsXml } = submissionApi
   const { getAsset } = useProjectsLibraryApi()
+  const { track } = useAnalytics()
 
   const uid = computed(() => toValue(formUid))
   const form = ref<Asset | null>(null)
@@ -78,6 +79,12 @@ export function useFormSubmissions(formUid: MaybeRefOrGetter<string | undefined>
       submissions.value = response.results
       totalCount.value = response.count
 
+      track('submissions_viewed', {
+        form_uid: id,
+        page: page.value,
+        total_count: totalCount.value,
+      })
+
       const maxPage =
         totalCount.value > 0 ? Math.ceil(totalCount.value / SUBMISSIONS_PAGE_SIZE) : 1
       if (page.value > maxPage) {
@@ -134,15 +141,23 @@ export function useFormSubmissions(formUid: MaybeRefOrGetter<string | undefined>
       const records = await fetchExportSubmissions()
       if (records.length === 0) {
         downloadError.value = 'No submissions to export'
+        track('submissions_exported', { format: 'json', form_uid: id, success: false })
         return
       }
       const blob = new Blob([JSON.stringify(records, null, 2)], {
         type: 'application/json',
       })
       triggerBrowserDownload(blob, submissionExportFilename(downloadBaseName.value, 'json'))
+      track('submissions_exported', {
+        format: 'json',
+        form_uid: id,
+        record_count: records.length,
+        success: true,
+      })
     } catch (err: unknown) {
       const apiErr = err as { message?: string }
       downloadError.value = apiErr.message ?? 'Failed to download JSON'
+      track('submissions_exported', { format: 'json', form_uid: id, success: false })
     } finally {
       downloading.value = null
     }
@@ -162,9 +177,11 @@ export function useFormSubmissions(formUid: MaybeRefOrGetter<string | undefined>
       })
       const blob = new Blob([xml], { type: 'application/xml' })
       triggerBrowserDownload(blob, submissionExportFilename(downloadBaseName.value, 'xml'))
+      track('submissions_exported', { format: 'xml', form_uid: id, success: true })
     } catch (err: unknown) {
       const apiErr = err as { message?: string }
       downloadError.value = apiErr.message ?? 'Failed to download XML'
+      track('submissions_exported', { format: 'xml', form_uid: id, success: false })
     } finally {
       downloading.value = null
     }
@@ -184,6 +201,7 @@ export function useFormSubmissions(formUid: MaybeRefOrGetter<string | undefined>
 
       if (submissionIds.length === 0) {
         downloadError.value = 'No submissions to export'
+        track('submissions_exported', { format: 'xlsx', form_uid: id, success: false })
         return
       }
 
@@ -193,9 +211,16 @@ export function useFormSubmissions(formUid: MaybeRefOrGetter<string | undefined>
         buildKoboLabelExportPayload({ submission_ids: submissionIds }),
       )
       triggerBrowserDownload(blob, submissionExportFilename(downloadBaseName.value, 'xlsx'))
+      track('submissions_exported', {
+        format: 'xlsx',
+        form_uid: id,
+        record_count: submissionIds.length,
+        success: true,
+      })
     } catch (err: unknown) {
       const apiErr = err as { message?: string }
       downloadError.value = apiErr.message ?? 'Failed to download XLSX'
+      track('submissions_exported', { format: 'xlsx', form_uid: id, success: false })
     } finally {
       downloading.value = null
     }

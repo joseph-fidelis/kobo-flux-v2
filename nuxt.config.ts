@@ -1,3 +1,5 @@
+import pkg from './package.json'
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
@@ -7,8 +9,12 @@ export default defineNuxtConfig({
     koboBaseUrl: process.env.NUXT_KOBO_BASE_URL ?? 'https://kf.kobotoolbox.org',
     public: {
       appName: process.env.NUXT_PUBLIC_APP_NAME ?? 'KoboFlux',
+      appVersion: pkg.version,
       /** Leave empty — API calls go to same-origin Nitro proxy routes (/api/*, /me/*). */
       baseURL: process.env.NUXT_PUBLIC_BASE_URL ?? '',
+      posthogKey: process.env.NUXT_PUBLIC_POSTHOG_KEY ?? '',
+      posthogHost: process.env.NUXT_PUBLIC_POSTHOG_HOST ?? 'https://us.i.posthog.com',
+      posthogEnabled: process.env.NUXT_PUBLIC_POSTHOG_ENABLED !== 'false',
     },
   },
   vite: {
@@ -19,6 +25,7 @@ export default defineNuxtConfig({
         'vue-sonner',
         'clsx',
         'tailwind-merge',
+        'posthog-js',
       ]
     }
   },

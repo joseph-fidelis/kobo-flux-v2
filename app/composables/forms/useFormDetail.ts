@@ -21,6 +21,7 @@ type FormDownloadFormat = "json" | "xml" | "xlsx";
 export function useFormDetail(uid: MaybeRefOrGetter<string>) {
   const { getAsset, getDeployment } = useProjectsLibraryApi();
   const { getAssetContent, getAssetXform, getAssetXls } = useFormContentApi();
+  const { track } = useAnalytics();
 
   const assetUid = computed(() => toValue(uid));
   const form = ref<Asset | null>(null);
@@ -53,6 +54,12 @@ export function useFormDetail(uid: MaybeRefOrGetter<string>) {
           deployment.value = null;
         }
       }
+
+      track("form_viewed", {
+        form_uid: id,
+        has_deployment: asset.has_deployment,
+        submission_count: asset.deployment__submission_count ?? 0,
+      });
     } catch (err: unknown) {
       const apiErr = err as { message?: string };
       error.value = apiErr.message ?? "Failed to load form";
@@ -78,9 +85,11 @@ export function useFormDetail(uid: MaybeRefOrGetter<string>) {
         type: "application/json",
       });
       triggerBrowserDownload(blob, `${downloadBaseName.value}.json`);
+      track("form_exported", { format: "json", form_uid: id, success: true });
     } catch (err: unknown) {
       const apiErr = err as { message?: string };
       downloadError.value = apiErr.message ?? "Failed to download JSON";
+      track("form_exported", { format: "json", form_uid: id, success: false });
     } finally {
       downloading.value = null;
     }
@@ -96,9 +105,11 @@ export function useFormDetail(uid: MaybeRefOrGetter<string>) {
       const xml = await getAssetXform(id);
       const blob = new Blob([xml], { type: "application/xml" });
       triggerBrowserDownload(blob, `${downloadBaseName.value}.xml`);
+      track("form_exported", { format: "xml", form_uid: id, success: true });
     } catch (err: unknown) {
       const apiErr = err as { message?: string };
       downloadError.value = apiErr.message ?? "Failed to download XML";
+      track("form_exported", { format: "xml", form_uid: id, success: false });
     } finally {
       downloading.value = null;
     }
@@ -113,9 +124,11 @@ export function useFormDetail(uid: MaybeRefOrGetter<string>) {
     try {
       const blob = await getAssetXls(id);
       triggerBrowserDownload(blob, `${downloadBaseName.value}.xlsx`);
+      track("form_exported", { format: "xlsx", form_uid: id, success: true });
     } catch (err: unknown) {
       const apiErr = err as { message?: string };
       downloadError.value = apiErr.message ?? "Failed to download XLSX";
+      track("form_exported", { format: "xlsx", form_uid: id, success: false });
     } finally {
       downloading.value = null;
     }
