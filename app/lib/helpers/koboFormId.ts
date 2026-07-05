@@ -96,6 +96,7 @@ export function resolveFormIdFromAsset(
 export interface ResolveFormIdOptions {
   getAssetContent?: (assetUid: string) => Promise<AssetContent>
   getAssetXform?: (assetUid: string) => Promise<string>
+  /** @deprecated v1 forms list removed June 2026 — last-resort id_string lookup only. */
   getV1Forms?: () => Promise<KoboV1FormListItem[]>
 }
 
@@ -128,6 +129,7 @@ export async function resolveFormIdWithFallbacks(
   }
 
   if (options.getV1Forms) {
+    // Stale v1 fallback — /api/v1/forms.json is removed on KPI/KC (June 2026).
     try {
       const forms = await options.getV1Forms()
       const deploymentUuid = asset.deployment__uuid

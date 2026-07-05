@@ -1,5 +1,5 @@
 import type {
-  KoboV1SubmissionPayload,
+  KoboSubmissionPayload,
   SubmissionFormMeta,
 } from '~/lib/models/SurveyData'
 import { isSystemExportColumn } from '~/lib/helpers/koboExport'
@@ -121,7 +121,7 @@ function applyLabelToXpathMap(
 export function buildSubmissionPayload(
   formMeta: SubmissionFormMeta,
   flatXpathRow: Record<string, string>,
-): KoboV1SubmissionPayload {
+): KoboSubmissionPayload {
   const submission = nestSubmissionFields(flatXpathRow)
 
   if (!submission.meta || typeof submission.meta !== 'object') {
@@ -146,6 +146,6 @@ export function labelRowToSubmissionPayload(
   formMeta: SubmissionFormMeta,
   labelRow: Record<string, string>,
   labelToXpath: Map<string, string>,
-): KoboV1SubmissionPayload {
+): KoboSubmissionPayload {
   return buildSubmissionPayload(formMeta, applyLabelToXpathMap(labelRow, labelToXpath))
 }

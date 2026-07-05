@@ -32,14 +32,18 @@ import type {
   UpdatePairedDataPayload,
   UpdateValidationStatusPayload,
   ValidationStatus,
+  KoboSubmissionPayload,
   KoboV1FormListItem,
-  KoboV1SubmissionPayload,
   SubmissionUploadResponse,
 } from "~/lib/models/SurveyData"
 
 const BASE = "/api/v2/assets"
-const V1_SUBMISSIONS = "/api/v1/submissions.json"
+/** @deprecated v1 removed June 2026 — kept for optional id_string fallback only. */
 const V1_FORMS = "/api/v1/forms.json"
+
+function openRosaSubmissionPath(username: string) {
+  return `/api/openrosa/${encodeURIComponent(username)}/submission`
+}
 
 /**
  * Service layer for KoboToolbox API v2 "Survey data" endpoints.
@@ -379,12 +383,15 @@ export const useSubmissionApi = () => {
       api.get<AssetReport>(`${BASE}/${assetUid}/reports/`),
 
     // -----------------------------------------------------------------
-    // v1 submission upload (KC)
+    // Submission upload (OpenRosa JSON)
     // -----------------------------------------------------------------
 
-    submitSubmission: (payload: KoboV1SubmissionPayload) =>
-      api.post<SubmissionUploadResponse>(V1_SUBMISSIONS, payload),
+    submitSubmission: (username: string, payload: KoboSubmissionPayload) =>
+      api.post<SubmissionUploadResponse>(openRosaSubmissionPath(username), payload),
 
+    /**
+     * @deprecated v1 /api/v1/forms.json removed June 2026. Prefer v2 asset metadata.
+     */
     getV1Forms: () => api.get<KoboV1FormListItem[]>(V1_FORMS),
   }
 }

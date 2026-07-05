@@ -14,6 +14,7 @@ import {
   FORM_ID_RESOLUTION_ERROR,
   resolveFormIdWithFallbacks,
 } from '~/lib/helpers/koboFormId'
+import { formatAssetOwner } from '~/composables/forms/formatAssetOwner'
 import { triggerBrowserDownload } from '~/lib/helpers/download'
 import {
   buildLabelToXpathMap,
@@ -35,6 +36,14 @@ function extractFormhubUuid(asset: Asset): string | undefined {
   for (const key of candidates) {
     const value = asset[key]
     if (typeof value === 'string' && value.trim()) return value.trim()
+  }
+  return undefined
+}
+
+function resolveOwnerUsername(asset: Asset): string | undefined {
+  if (asset.owner__username?.trim()) return asset.owner__username.trim()
+  if (typeof asset.owner === 'string' && asset.owner.trim()) {
+    return formatAssetOwner(asset.owner, asset)
   }
   return undefined
 }
@@ -102,15 +111,13 @@ export function useSubmissionUpload(formUid: MaybeRefOrGetter<string | undefined
     return expectedHeaders.value
   })
 
-  async function resolveFormhubUuid(formId: string, asset: Asset): Promise<string | undefined> {
+  async function resolveFormhubUuid(asset: Asset): Promise<string | undefined> {
     const fromAsset = extractFormhubUuid(asset)
     if (fromAsset) return fromAsset
 
+    // Stale v1 fallback — only reached when deployment__uuid is missing on the asset.
     try {
       const forms = await getV1Forms()
-      const byIdString = forms.find((item) => item.id_string === formId)
-      if (byIdString?.uuid) return byIdString.uuid
-
       const deploymentUuid = asset.deployment__uuid
       if (typeof deploymentUuid === 'string' && deploymentUuid.trim()) {
         const byUuid = forms.find((item) => item.uuid === deploymentUuid)
@@ -122,6 +129,13 @@ export function useSubmissionUpload(formUid: MaybeRefOrGetter<string | undefined
   }
 
   async function resolveFormMeta(asset: Asset, deploymentData: Deployment | null) {
+    const ownerUsername = resolveOwnerUsername(asset)
+    if (!ownerUsername) {
+      throw new Error(
+        'Could not resolve form owner username. The asset must include owner__username for OpenRosa submission upload.',
+      )
+    }
+
     const formId = await resolveFormIdWithFallbacks(asset, deploymentData, {
       getAssetContent,
       getAssetXform: async (assetUid) => {
@@ -137,10 +151,11 @@ export function useSubmissionUpload(formUid: MaybeRefOrGetter<string | undefined
       throw new Error(FORM_ID_RESOLUTION_ERROR)
     }
 
-    const formhubUuid = await resolveFormhubUuid(formId, asset)
+    const formhubUuid = await resolveFormhubUuid(asset)
     formMeta.value = {
       assetUid: asset.uid,
       formId,
+      ownerUsername,
       ...(formhubUuid ? { formhubUuid } : {}),
     }
   }
@@ -294,7 +309,7 @@ export function useSubmissionUpload(formUid: MaybeRefOrGetter<string | undefined
       )
 
       try {
-        const response = await submitSubmission(payload)
+        const response = await submitSubmission(formMeta.value.ownerUsername, payload)
         const ok = response.status === 201
         uploadResults.value.push({
           row: rowNumber,

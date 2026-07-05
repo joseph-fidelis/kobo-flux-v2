@@ -297,19 +297,25 @@ export interface KoboListParams {
   }
 
   // ---------------------------------------------------------------------------
-  // v1 submission upload
+  // Submission upload (OpenRosa JSON)
   // ---------------------------------------------------------------------------
 
   export interface SubmissionFormMeta {
     assetUid: string
+    /** Form id_string used in the submission payload `id` field. */
     formId: string
+    /** Asset owner username — required for OpenRosa POST /{username}/submission. */
+    ownerUsername: string
     formhubUuid?: string
   }
 
-  export interface KoboV1SubmissionPayload {
+  export interface KoboSubmissionPayload {
     id: string
     submission: Record<string, unknown>
   }
+
+  /** @deprecated Use {@link KoboSubmissionPayload}. v1 endpoint removed June 2026. */
+  export type KoboV1SubmissionPayload = KoboSubmissionPayload
 
   export interface SubmissionUploadResponse {
     status: number
@@ -330,6 +336,10 @@ export interface KoboListParams {
     failed: number
   }
 
+  /**
+   * @deprecated v1 /api/v1/forms.json removed June 2026. Prefer v2 asset fields
+   * (deployment__uuid, content.settings.id_string) for form metadata.
+   */
   export interface KoboV1FormListItem {
     id_string?: string
     uuid?: string

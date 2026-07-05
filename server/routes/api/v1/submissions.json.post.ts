@@ -1,4 +1,4 @@
-import { createError, readBody, setResponseStatus } from "h3"
+import { createError, readBody, setResponseHeader, setResponseStatus } from "h3"
 
 interface KoboV1SubmissionPayload {
   id: string
@@ -6,19 +6,13 @@ interface KoboV1SubmissionPayload {
 }
 
 /**
- * Proxy a single v1 submission POST to Kobo (KC).
- * Always responds with HTTP 200 and { status, data } so batch uploads can handle per-row failures.
+ * @deprecated Removed upstream June 2026. Use OpenRosa instead:
+ *   POST /api/openrosa/{username}/submission
+ *
+ * This route is kept only for backwards compatibility and always returns a
+ * migration hint — it no longer proxies to KC v1.
  */
 export default defineEventHandler(async (event) => {
-  const config = useRuntimeConfig()
-
-  if (!config.koboApiToken) {
-    throw createError({
-      statusCode: 500,
-      statusMessage: "Kobo API token is not configured (set NUXT_KOBO_API_TOKEN)",
-    })
-  }
-
   const body = await readBody<KoboV1SubmissionPayload>(event)
   if (!body?.id || !body?.submission) {
     throw createError({
@@ -27,35 +21,20 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const base = config.koboBaseUrl.replace(/\/$/, "")
-  const target = `${base}/api/v1/submissions.json`
-  const headers = {
-    Authorization: `Token ${config.koboApiToken}`,
-    Accept: "application/json",
-    "Content-Type": "application/json",
-  }
+  setResponseHeader(event, "Deprecation", "true")
+  setResponseHeader(
+    event,
+    "Link",
+    '</api/openrosa/{username}/submission>; rel="successor-version"',
+  )
+  setResponseStatus(event, 200)
 
-  try {
-    const response = await $fetch.raw(target, {
-      method: "POST",
-      headers,
-      body,
-    })
-
-    setResponseStatus(event, 200)
-    return { status: response.status, data: response._data }
-  } catch (err: unknown) {
-    const fetchErr = err as {
-      response?: { status?: number }
-      data?: unknown
-      message?: string
-    }
-
-    const status = fetchErr.response?.status ?? 502
-    setResponseStatus(event, 200)
-    return {
-      status,
-      data: fetchErr.data ?? { message: fetchErr.message ?? "Kobo submission failed" },
-    }
+  return {
+    status: 410,
+    data: {
+      message:
+        "KC v1 /api/v1/submissions.json was removed in June 2026. "
+        + "Use POST /api/openrosa/{ownerUsername}/submission with the same JSON body.",
+    },
   }
 })
