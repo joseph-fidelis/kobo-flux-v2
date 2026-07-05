@@ -80,16 +80,6 @@ interface _GlobalComponents {
   Collapsible: typeof import("../../app/components/ui/collapsible/index")['Collapsible']
   CollapsibleContent: typeof import("../../app/components/ui/collapsible/index")['CollapsibleContent']
   CollapsibleTrigger: typeof import("../../app/components/ui/collapsible/index")['CollapsibleTrigger']
-  Dialog: typeof import("../../app/components/ui/dialog/index")['Dialog']
-  DialogClose: typeof import("../../app/components/ui/dialog/index")['DialogClose']
-  DialogContent: typeof import("../../app/components/ui/dialog/index")['DialogContent']
-  DialogDescription: typeof import("../../app/components/ui/dialog/index")['DialogDescription']
-  DialogFooter: typeof import("../../app/components/ui/dialog/index")['DialogFooter']
-  DialogHeader: typeof import("../../app/components/ui/dialog/index")['DialogHeader']
-  DialogOverlay: typeof import("../../app/components/ui/dialog/index")['DialogOverlay']
-  DialogScrollContent: typeof import("../../app/components/ui/dialog/index")['DialogScrollContent']
-  DialogTitle: typeof import("../../app/components/ui/dialog/index")['DialogTitle']
-  DialogTrigger: typeof import("../../app/components/ui/dialog/index")['DialogTrigger']
   DropdownMenu: typeof import("../../app/components/ui/dropdown-menu/index")['DropdownMenu']
   DropdownMenuCheckboxItem: typeof import("../../app/components/ui/dropdown-menu/index")['DropdownMenuCheckboxItem']
   DropdownMenuContent: typeof import("../../app/components/ui/dropdown-menu/index")['DropdownMenuContent']
@@ -105,6 +95,16 @@ interface _GlobalComponents {
   DropdownMenuSubTrigger: typeof import("../../app/components/ui/dropdown-menu/index")['DropdownMenuSubTrigger']
   DropdownMenuTrigger: typeof import("../../app/components/ui/dropdown-menu/index")['DropdownMenuTrigger']
   DropdownMenuPortal: typeof import("../../app/components/ui/dropdown-menu/index")['DropdownMenuPortal']
+  Dialog: typeof import("../../app/components/ui/dialog/index")['Dialog']
+  DialogClose: typeof import("../../app/components/ui/dialog/index")['DialogClose']
+  DialogContent: typeof import("../../app/components/ui/dialog/index")['DialogContent']
+  DialogDescription: typeof import("../../app/components/ui/dialog/index")['DialogDescription']
+  DialogFooter: typeof import("../../app/components/ui/dialog/index")['DialogFooter']
+  DialogHeader: typeof import("../../app/components/ui/dialog/index")['DialogHeader']
+  DialogOverlay: typeof import("../../app/components/ui/dialog/index")['DialogOverlay']
+  DialogScrollContent: typeof import("../../app/components/ui/dialog/index")['DialogScrollContent']
+  DialogTitle: typeof import("../../app/components/ui/dialog/index")['DialogTitle']
+  DialogTrigger: typeof import("../../app/components/ui/dialog/index")['DialogTrigger']
   Empty: typeof import("../../app/components/ui/empty/index")['Empty']
   EmptyContent: typeof import("../../app/components/ui/empty/index")['EmptyContent']
   EmptyDescription: typeof import("../../app/components/ui/empty/index")['EmptyDescription']
@@ -198,6 +198,10 @@ interface _GlobalComponents {
   StepperTitle: typeof import("../../app/components/ui/stepper/index")['StepperTitle']
   StepperTrigger: typeof import("../../app/components/ui/stepper/index")['StepperTrigger']
   Switch: typeof import("../../app/components/ui/switch/index")['Switch']
+  Tabs: typeof import("../../app/components/ui/tabs/index")['Tabs']
+  TabsContent: typeof import("../../app/components/ui/tabs/index")['TabsContent']
+  TabsList: typeof import("../../app/components/ui/tabs/index")['TabsList']
+  TabsTrigger: typeof import("../../app/components/ui/tabs/index")['TabsTrigger']
   Table: typeof import("../../app/components/ui/table/index")['Table']
   TableBody: typeof import("../../app/components/ui/table/index")['TableBody']
   TableCaption: typeof import("../../app/components/ui/table/index")['TableCaption']
@@ -207,10 +211,6 @@ interface _GlobalComponents {
   TableHead: typeof import("../../app/components/ui/table/index")['TableHead']
   TableHeader: typeof import("../../app/components/ui/table/index")['TableHeader']
   TableRow: typeof import("../../app/components/ui/table/index")['TableRow']
-  Tabs: typeof import("../../app/components/ui/tabs/index")['Tabs']
-  TabsContent: typeof import("../../app/components/ui/tabs/index")['TabsContent']
-  TabsList: typeof import("../../app/components/ui/tabs/index")['TabsList']
-  TabsTrigger: typeof import("../../app/components/ui/tabs/index")['TabsTrigger']
   Textarea: typeof import("../../app/components/ui/textarea/index")['Textarea']
   Tooltip: typeof import("../../app/components/ui/tooltip/index")['Tooltip']
   TooltipContent: typeof import("../../app/components/ui/tooltip/index")['TooltipContent']
@@ -295,16 +295,6 @@ interface _GlobalComponents {
   LazyCollapsible: LazyComponent<typeof import("../../app/components/ui/collapsible/index")['Collapsible']>
   LazyCollapsibleContent: LazyComponent<typeof import("../../app/components/ui/collapsible/index")['CollapsibleContent']>
   LazyCollapsibleTrigger: LazyComponent<typeof import("../../app/components/ui/collapsible/index")['CollapsibleTrigger']>
-  LazyDialog: LazyComponent<typeof import("../../app/components/ui/dialog/index")['Dialog']>
-  LazyDialogClose: LazyComponent<typeof import("../../app/components/ui/dialog/index")['DialogClose']>
-  LazyDialogContent: LazyComponent<typeof import("../../app/components/ui/dialog/index")['DialogContent']>
-  LazyDialogDescription: LazyComponent<typeof import("../../app/components/ui/dialog/index")['DialogDescription']>
-  LazyDialogFooter: LazyComponent<typeof import("../../app/components/ui/dialog/index")['DialogFooter']>
-  LazyDialogHeader: LazyComponent<typeof import("../../app/components/ui/dialog/index")['DialogHeader']>
-  LazyDialogOverlay: LazyComponent<typeof import("../../app/components/ui/dialog/index")['DialogOverlay']>
-  LazyDialogScrollContent: LazyComponent<typeof import("../../app/components/ui/dialog/index")['DialogScrollContent']>
-  LazyDialogTitle: LazyComponent<typeof import("../../app/components/ui/dialog/index")['DialogTitle']>
-  LazyDialogTrigger: LazyComponent<typeof import("../../app/components/ui/dialog/index")['DialogTrigger']>
   LazyDropdownMenu: LazyComponent<typeof import("../../app/components/ui/dropdown-menu/index")['DropdownMenu']>
   LazyDropdownMenuCheckboxItem: LazyComponent<typeof import("../../app/components/ui/dropdown-menu/index")['DropdownMenuCheckboxItem']>
   LazyDropdownMenuContent: LazyComponent<typeof import("../../app/components/ui/dropdown-menu/index")['DropdownMenuContent']>
@@ -320,6 +310,16 @@ interface _GlobalComponents {
   LazyDropdownMenuSubTrigger: LazyComponent<typeof import("../../app/components/ui/dropdown-menu/index")['DropdownMenuSubTrigger']>
   LazyDropdownMenuTrigger: LazyComponent<typeof import("../../app/components/ui/dropdown-menu/index")['DropdownMenuTrigger']>
   LazyDropdownMenuPortal: LazyComponent<typeof import("../../app/components/ui/dropdown-menu/index")['DropdownMenuPortal']>
+  LazyDialog: LazyComponent<typeof import("../../app/components/ui/dialog/index")['Dialog']>
+  LazyDialogClose: LazyComponent<typeof import("../../app/components/ui/dialog/index")['DialogClose']>
+  LazyDialogContent: LazyComponent<typeof import("../../app/components/ui/dialog/index")['DialogContent']>
+  LazyDialogDescription: LazyComponent<typeof import("../../app/components/ui/dialog/index")['DialogDescription']>
+  LazyDialogFooter: LazyComponent<typeof import("../../app/components/ui/dialog/index")['DialogFooter']>
+  LazyDialogHeader: LazyComponent<typeof import("../../app/components/ui/dialog/index")['DialogHeader']>
+  LazyDialogOverlay: LazyComponent<typeof import("../../app/components/ui/dialog/index")['DialogOverlay']>
+  LazyDialogScrollContent: LazyComponent<typeof import("../../app/components/ui/dialog/index")['DialogScrollContent']>
+  LazyDialogTitle: LazyComponent<typeof import("../../app/components/ui/dialog/index")['DialogTitle']>
+  LazyDialogTrigger: LazyComponent<typeof import("../../app/components/ui/dialog/index")['DialogTrigger']>
   LazyEmpty: LazyComponent<typeof import("../../app/components/ui/empty/index")['Empty']>
   LazyEmptyContent: LazyComponent<typeof import("../../app/components/ui/empty/index")['EmptyContent']>
   LazyEmptyDescription: LazyComponent<typeof import("../../app/components/ui/empty/index")['EmptyDescription']>
@@ -413,6 +413,10 @@ interface _GlobalComponents {
   LazyStepperTitle: LazyComponent<typeof import("../../app/components/ui/stepper/index")['StepperTitle']>
   LazyStepperTrigger: LazyComponent<typeof import("../../app/components/ui/stepper/index")['StepperTrigger']>
   LazySwitch: LazyComponent<typeof import("../../app/components/ui/switch/index")['Switch']>
+  LazyTabs: LazyComponent<typeof import("../../app/components/ui/tabs/index")['Tabs']>
+  LazyTabsContent: LazyComponent<typeof import("../../app/components/ui/tabs/index")['TabsContent']>
+  LazyTabsList: LazyComponent<typeof import("../../app/components/ui/tabs/index")['TabsList']>
+  LazyTabsTrigger: LazyComponent<typeof import("../../app/components/ui/tabs/index")['TabsTrigger']>
   LazyTable: LazyComponent<typeof import("../../app/components/ui/table/index")['Table']>
   LazyTableBody: LazyComponent<typeof import("../../app/components/ui/table/index")['TableBody']>
   LazyTableCaption: LazyComponent<typeof import("../../app/components/ui/table/index")['TableCaption']>
@@ -422,10 +426,6 @@ interface _GlobalComponents {
   LazyTableHead: LazyComponent<typeof import("../../app/components/ui/table/index")['TableHead']>
   LazyTableHeader: LazyComponent<typeof import("../../app/components/ui/table/index")['TableHeader']>
   LazyTableRow: LazyComponent<typeof import("../../app/components/ui/table/index")['TableRow']>
-  LazyTabs: LazyComponent<typeof import("../../app/components/ui/tabs/index")['Tabs']>
-  LazyTabsContent: LazyComponent<typeof import("../../app/components/ui/tabs/index")['TabsContent']>
-  LazyTabsList: LazyComponent<typeof import("../../app/components/ui/tabs/index")['TabsList']>
-  LazyTabsTrigger: LazyComponent<typeof import("../../app/components/ui/tabs/index")['TabsTrigger']>
   LazyTextarea: LazyComponent<typeof import("../../app/components/ui/textarea/index")['Textarea']>
   LazyTooltip: LazyComponent<typeof import("../../app/components/ui/tooltip/index")['Tooltip']>
   LazyTooltipContent: LazyComponent<typeof import("../../app/components/ui/tooltip/index")['TooltipContent']>

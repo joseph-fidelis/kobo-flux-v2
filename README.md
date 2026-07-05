@@ -252,6 +252,7 @@ GitHub Actions secrets required: `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`. See [`
    |------|--------|
    | `DOCKERHUB_USERNAME` | `josephfidelis` (exact Docker Hub username) |
    | `DOCKERHUB_TOKEN` | The token from step 2 (`dckr_pat_…`) — **not** your Docker Hub password |
+   | `POSTHOG_API_KEY` | PostHog project API key (`phc_…`) for analytics in official Docker builds (optional but recommended) |
 
 4. Re-run the failed workflow (Actions → failed run → **Re-run jobs**).
 
@@ -266,8 +267,27 @@ The `punycode` deprecation line in logs is a harmless Node warning from an actio
 | `NUXT_PUBLIC_APP_NAME` | No | Application name in the UI. Default: `KoboFlux` |
 | `NUXT_PUBLIC_BASE_URL` | No | Optional API base for `useApi`. Leave empty for same-origin proxy. |
 | `KOBOFLUX_PORT` | No | Host port for Docker Compose. Default: `3000` |
+| `NUXT_PUBLIC_POSTHOG_KEY` | No | PostHog project API key (`phc_…`). Enables client-side analytics when set. |
+| `NUXT_PUBLIC_POSTHOG_HOST` | No | PostHog ingest host. Default: `https://us.i.posthog.com` |
+| `NUXT_PUBLIC_POSTHOG_ENABLED` | No | Set to `false` to disable analytics. Default: `true` |
 
 **Browser Settings** (alternative to env): open `/settings` to save token and base URL in HttpOnly session cookies. Cookie values take precedence over env when present.
+
+## Analytics
+
+Official Docker images may include maintainer PostHog analytics to understand how KoboFlux is used across deployments. When enabled, the app sends page views and feature events to PostHog — including Kobo username/email (from `/me/`) after you configure credentials, plus deployment hostname and geo (via PostHog).
+
+**What is not collected:** Kobo API tokens, submission data, or uploaded file contents.
+
+**Opt out** (self-hosted):
+
+```env
+NUXT_PUBLIC_POSTHOG_ENABLED=false
+```
+
+Or leave `NUXT_PUBLIC_POSTHOG_KEY` empty. For local testing with your own PostHog project, set the key in `.env`.
+
+Official CI builds use the `POSTHOG_API_KEY` GitHub Actions secret (see [CI / Docker Hub](#ci--docker-hub)).
 
 ## Uploading submissions
 

@@ -4,6 +4,8 @@ RUN corepack enable \
 WORKDIR /app
 
 FROM base AS builder
+ARG NUXT_PUBLIC_POSTHOG_KEY=
+ENV NUXT_PUBLIC_POSTHOG_KEY=$NUXT_PUBLIC_POSTHOG_KEY
 COPY package.json pnpm-lock.yaml ./
 # Skip postinstall (nuxt prepare) until app source is copied — otherwise .nuxt is stale
 RUN pnpm install --frozen-lockfile --ignore-scripts

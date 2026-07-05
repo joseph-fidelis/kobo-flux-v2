@@ -96,6 +96,21 @@ Feature-specific state and actions, e.g.:
 
 Set `NUXT_KOBO_BASE_URL` to match where your account and forms live.
 
+## Analytics
+
+When PostHog is enabled (`NUXT_PUBLIC_POSTHOG_KEY` set and `NUXT_PUBLIC_POSTHOG_ENABLED` not `false`), the browser sends product analytics to PostHog:
+
+- **Page views** and feature events (forms viewed, exports, uploads, settings saved)
+- **User identity** from Kobo `/me/` (username, email, organization) after credentials are configured
+- **Deployment context** (hostname, Kobo base URL, credential source, app version)
+- **Geo location** (derived by PostHog from IP)
+
+**Not collected:** Kobo API tokens, cookies, form submission rows, export file contents, or uploaded spreadsheet data.
+
+Official Docker images built via CI embed the maintainer PostHog key. Self-hosters can opt out with `NUXT_PUBLIC_POSTHOG_ENABLED=false` in `.env`.
+
+Implementation: `app/plugins/posthog.client.ts`, `app/composables/useAnalytics.ts`, `app/middleware/analytics.global.ts`.
+
 ## Extending the app
 
 **New read-only Kobo feature**

@@ -66,6 +66,7 @@ export function useSubmissionUpload(formUid: MaybeRefOrGetter<string | undefined
   const { getAssetContent, getAssetXml, getAssetXform } = useFormContentApi()
   const submissionApi = useSubmissionApi()
   const { submitSubmission } = submissionApi
+  const { track } = useAnalytics()
 
   const form = ref<Asset | null>(null)
   const deployment = ref<Deployment | null>(null)
@@ -246,6 +247,13 @@ export function useSubmissionUpload(formUid: MaybeRefOrGetter<string | undefined
         expectedHeaders.value,
         parsed.headers,
       )
+      track('upload_file_selected', {
+        form_uid: uid.value,
+        row_count: totalRowCount.value,
+        headers_valid: validation.value.valid,
+        missing_count: validation.value.missing.length,
+        extra_count: validation.value.extra.length,
+      })
     } catch (err: unknown) {
       const apiErr = err as { message?: string }
       parseError.value = apiErr.message ?? 'Failed to read spreadsheet'
@@ -262,6 +270,10 @@ export function useSubmissionUpload(formUid: MaybeRefOrGetter<string | undefined
     const blob = buildXlsxBlob(dataHeaders.length > 0 ? dataHeaders : expectedHeaders.value)
     const name = form.value?.name ?? uid.value ?? 'form'
     triggerBrowserDownload(blob, `${name.replace(/[^\w.-]+/g, '_')}-upload-template.xlsx`)
+    track('upload_template_downloaded', {
+      form_uid: uid.value,
+      header_count: expectedHeaders.value.length,
+    })
   }
 
   function downloadUploadLog() {
@@ -281,6 +293,7 @@ export function useSubmissionUpload(formUid: MaybeRefOrGetter<string | undefined
     uploading.value = true
     uploadMessage.value = null
     uploadResults.value = []
+    const startedAt = Date.now()
 
     const labelRows = rowsToFlatDicts(uploadedHeaders.value, parsedDataRows.value)
     const total = labelRows.length
@@ -327,6 +340,13 @@ export function useSubmissionUpload(formUid: MaybeRefOrGetter<string | undefined
 
     const { succeeded, failed } = uploadProgress.value
     uploadMessage.value = `Upload complete: ${succeeded} succeeded, ${failed} failed.`
+    track('upload_completed', {
+      form_uid: uid.value,
+      row_count: total,
+      succeeded,
+      failed,
+      duration_ms: Date.now() - startedAt,
+    })
     uploading.value = false
   }
 

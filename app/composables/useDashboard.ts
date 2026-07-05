@@ -36,6 +36,7 @@ function computeKpis(forms: Asset[]): DashboardKpis {
 
 export function useDashboard() {
   const { getAssets } = useProjectsLibraryApi()
+  const { track } = useAnalytics()
 
   const forms = ref<Asset[]>([])
   const pending = ref(true)
@@ -56,6 +57,11 @@ export function useDashboard() {
         limit: 100,
       })
       forms.value = response.results
+      const stats = computeKpis(forms.value)
+      track('dashboard_loaded', {
+        form_count: stats.totalForms,
+        submission_count: stats.totalSubmissions,
+      })
     } catch (err: unknown) {
       const apiErr = err as { message?: string }
       error.value = apiErr.message ?? 'Failed to load dashboard'

@@ -4,6 +4,7 @@ import { formatAssetOwner } from '~/composables/forms/formatAssetOwner'
 
 export function useForms() {
   const { getAssets } = useProjectsLibraryApi()
+  const { track } = useAnalytics()
 
   const forms = ref<Asset[]>([])
   const pending = ref(true)
@@ -20,6 +21,7 @@ export function useForms() {
         limit: 100,
       })
       forms.value = response.results
+      track('forms_loaded', { form_count: forms.value.length })
     } catch (err: unknown) {
       const apiErr = err as { message?: string }
       error.value = apiErr.message ?? 'Failed to load forms'

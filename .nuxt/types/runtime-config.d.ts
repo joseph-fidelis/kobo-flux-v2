@@ -25,7 +25,15 @@ import { RuntimeConfig as UserRuntimeConfig, PublicRuntimeConfig as UserPublicRu
   interface SharedPublicRuntimeConfig {
    appName: string,
 
+   appVersion: string,
+
    baseURL: string,
+
+   posthogKey: string,
+
+   posthogHost: string,
+
+   posthogEnabled: boolean,
   }
 declare module '@nuxt/schema' {
   interface RuntimeConfig extends UserRuntimeConfig {}

@@ -31,6 +31,7 @@ KoboFlux is designed so that:
 - **Resolution order:** browser cookies override env vars when both token and base URL are present in cookies
 - **Browser requests** go to same-origin routes (`/api/*`, `/me/*`), which proxy to Kobo with the resolved credentials
 - **No end-user authentication** is built into v2 yet — anyone who can reach your deployment uses the configured Kobo token's permissions
+- **Optional analytics** — when enabled, anonymous usage events and (after Kobo login) Kobo username/email may be sent to [PostHog](https://posthog.com) for product improvement. Set `NUXT_PUBLIC_POSTHOG_ENABLED=false` or omit `NUXT_PUBLIC_POSTHOG_KEY` to disable. Kobo API tokens and submission data are never sent.
 
 
 

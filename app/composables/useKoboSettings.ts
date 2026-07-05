@@ -11,6 +11,7 @@ export function useKoboSettings() {
   const pending = ref(false)
   const saving = ref(false)
   const error = ref<string | null>(null)
+  const { track, reset } = useAnalytics()
 
   async function fetchStatus() {
     pending.value = true
@@ -29,10 +30,16 @@ export function useKoboSettings() {
   async function saveSettings(token: string, baseUrl: string) {
     saving.value = true
     error.value = null
+    const sourceBefore = status.value?.source ?? null
     try {
       status.value = await $fetch<KoboSettingsStatus>('/api/kobo/settings', {
         method: 'POST',
         body: { token, baseUrl },
+      })
+      track('credentials_saved', {
+        base_url: baseUrl,
+        source_before: sourceBefore,
+        success: true,
       })
       return true
     } catch (err: unknown) {
@@ -47,6 +54,11 @@ export function useKoboSettings() {
         ?? apiErr.statusMessage
         ?? apiErr.message
         ?? 'Failed to save settings'
+      track('credentials_saved', {
+        base_url: baseUrl,
+        source_before: sourceBefore,
+        success: false,
+      })
       return false
     } finally {
       saving.value = false
@@ -60,10 +72,13 @@ export function useKoboSettings() {
       status.value = await $fetch<KoboSettingsStatus>('/api/kobo/settings', {
         method: 'DELETE',
       })
+      track('credentials_cleared', { success: true })
+      reset()
       return true
     } catch (err: unknown) {
       const apiErr = err as { message?: string; statusMessage?: string }
       error.value = apiErr.message ?? apiErr.statusMessage ?? 'Failed to clear settings'
+      track('credentials_cleared', { success: false })
       return false
     } finally {
       saving.value = false

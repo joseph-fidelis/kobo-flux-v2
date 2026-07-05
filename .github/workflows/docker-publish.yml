@@ -6,6 +6,10 @@ on:
       - main
     tags:
       - "v*.*.*"
+  pull_request:
+    branches:
+      - main
+
 
 permissions:
   contents: read
@@ -76,5 +80,7 @@ jobs:
           push: true
           tags: ${{ steps.docker_meta.outputs.tags }}
           labels: ${{ steps.docker_meta.outputs.labels }}
+          build-args: |
+            NUXT_PUBLIC_POSTHOG_KEY=${{ secrets.POSTHOG_API_KEY }}
           cache-from: type=gha
           cache-to: type=gha,mode=max

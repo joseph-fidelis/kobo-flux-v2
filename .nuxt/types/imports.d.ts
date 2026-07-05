@@ -97,6 +97,7 @@ declare global {
   const tw: typeof import('../../node_modules/.pnpm/@nuxtjs+tailwindcss@7.0.0-beta.1_magicast@0.5.2_vite@7.3.1_jiti@2.6.1_lightningcss@1.31.1_terser@5.46.0_yaml@2.8.2_/node_modules/@nuxtjs/tailwindcss/dist/runtime/utils').autocompleteUtil
   const unref: typeof import('vue').unref
   const updateAppConfig: typeof import('../../node_modules/.pnpm/nuxt@4.4.2_@babel+core@7.29.0_@babel+plugin-syntax-jsx@7.28.6_@babel+core@7.29.0__@parc_5a195fceced10ac9fea902dd8b70b305/node_modules/nuxt/dist/app/config').updateAppConfig
+  const useAnalytics: typeof import('../../app/composables/useAnalytics').useAnalytics
   const useAnnouncer: typeof import('../../node_modules/.pnpm/nuxt@4.4.2_@babel+core@7.29.0_@babel+plugin-syntax-jsx@7.28.6_@babel+core@7.29.0__@parc_5a195fceced10ac9fea902dd8b70b305/node_modules/nuxt/dist/app/composables/announcer').useAnnouncer
   const useAppConfig: typeof import('../../node_modules/.pnpm/nuxt@4.4.2_@babel+core@7.29.0_@babel+plugin-syntax-jsx@7.28.6_@babel+core@7.29.0__@parc_5a195fceced10ac9fea902dd8b70b305/node_modules/nuxt/dist/app/config').useAppConfig
   const useAssetStatus: typeof import('../../app/composables/useAssetStatus').useAssetStatus
@@ -305,6 +306,7 @@ declare module 'vue' {
     readonly tw: UnwrapRef<typeof import('../../node_modules/.pnpm/@nuxtjs+tailwindcss@7.0.0-beta.1_magicast@0.5.2_vite@7.3.1_jiti@2.6.1_lightningcss@1.31.1_terser@5.46.0_yaml@2.8.2_/node_modules/@nuxtjs/tailwindcss/dist/runtime/utils')['autocompleteUtil']>
     readonly unref: UnwrapRef<typeof import('vue')['unref']>
     readonly updateAppConfig: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.4.2_@babel+core@7.29.0_@babel+plugin-syntax-jsx@7.28.6_@babel+core@7.29.0__@parc_5a195fceced10ac9fea902dd8b70b305/node_modules/nuxt/dist/app/config')['updateAppConfig']>
+    readonly useAnalytics: UnwrapRef<typeof import('../../app/composables/useAnalytics')['useAnalytics']>
     readonly useAnnouncer: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.4.2_@babel+core@7.29.0_@babel+plugin-syntax-jsx@7.28.6_@babel+core@7.29.0__@parc_5a195fceced10ac9fea902dd8b70b305/node_modules/nuxt/dist/app/composables/announcer')['useAnnouncer']>
     readonly useAppConfig: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.4.2_@babel+core@7.29.0_@babel+plugin-syntax-jsx@7.28.6_@babel+core@7.29.0__@parc_5a195fceced10ac9fea902dd8b70b305/node_modules/nuxt/dist/app/config')['useAppConfig']>
     readonly useAssetStatus: UnwrapRef<typeof import('../../app/composables/useAssetStatus')['useAssetStatus']>
