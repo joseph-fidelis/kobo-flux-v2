@@ -126,6 +126,7 @@ declare global {
   const useNuxtApp: typeof import('../../node_modules/.pnpm/nuxt@4.4.2_@babel+core@7.29.0_@babel+plugin-syntax-jsx@7.28.6_@babel+core@7.29.0__@parc_5a195fceced10ac9fea902dd8b70b305/node_modules/nuxt/dist/app/nuxt').useNuxtApp
   const useNuxtData: typeof import('../../node_modules/.pnpm/nuxt@4.4.2_@babel+core@7.29.0_@babel+plugin-syntax-jsx@7.28.6_@babel+core@7.29.0__@parc_5a195fceced10ac9fea902dd8b70b305/node_modules/nuxt/dist/app/composables/asyncData').useNuxtData
   const useNuxtDevTools: typeof import('../../node_modules/.pnpm/@nuxt+devtools@3.2.3_vite@7.3.1_jiti@2.6.1_lightningcss@1.31.1_terser@5.46.0_yaml@2.8.2__vue@3.5.30_typescript@5.9.3_/node_modules/@nuxt/devtools/dist/runtime/use-nuxt-devtools').useNuxtDevTools
+  const useOrgMembers: typeof import('../../app/composables/useOrgMembers').useOrgMembers
   const usePinia: typeof import('../../node_modules/.pnpm/@pinia+nuxt@0.11.3_magicast@0.5.2_pinia@3.0.4_typescript@5.9.3_vue@3.5.30_typescript@5.9.3__/node_modules/@pinia/nuxt/dist/runtime/composables').usePinia
   const usePreviewMode: typeof import('../../node_modules/.pnpm/nuxt@4.4.2_@babel+core@7.29.0_@babel+plugin-syntax-jsx@7.28.6_@babel+core@7.29.0__@parc_5a195fceced10ac9fea902dd8b70b305/node_modules/nuxt/dist/app/composables/preview').usePreviewMode
   const useRequestEvent: typeof import('../../node_modules/.pnpm/nuxt@4.4.2_@babel+core@7.29.0_@babel+plugin-syntax-jsx@7.28.6_@babel+core@7.29.0__@parc_5a195fceced10ac9fea902dd8b70b305/node_modules/nuxt/dist/app/composables/ssr').useRequestEvent
@@ -201,6 +202,9 @@ declare global {
   // @ts-ignore
   export type { DashboardKpis } from '../../app/composables/useDashboard'
   import('../../app/composables/useDashboard')
+  // @ts-ignore
+  export type { OrgMembersKpis } from '../../app/composables/useOrgMembers'
+  import('../../app/composables/useOrgMembers')
 }
 // for vue template auto import
 import { UnwrapRef } from 'vue'
@@ -331,6 +335,7 @@ declare module 'vue' {
     readonly useNuxtApp: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.4.2_@babel+core@7.29.0_@babel+plugin-syntax-jsx@7.28.6_@babel+core@7.29.0__@parc_5a195fceced10ac9fea902dd8b70b305/node_modules/nuxt/dist/app/nuxt')['useNuxtApp']>
     readonly useNuxtData: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.4.2_@babel+core@7.29.0_@babel+plugin-syntax-jsx@7.28.6_@babel+core@7.29.0__@parc_5a195fceced10ac9fea902dd8b70b305/node_modules/nuxt/dist/app/composables/asyncData')['useNuxtData']>
     readonly useNuxtDevTools: UnwrapRef<typeof import('../../node_modules/.pnpm/@nuxt+devtools@3.2.3_vite@7.3.1_jiti@2.6.1_lightningcss@1.31.1_terser@5.46.0_yaml@2.8.2__vue@3.5.30_typescript@5.9.3_/node_modules/@nuxt/devtools/dist/runtime/use-nuxt-devtools')['useNuxtDevTools']>
+    readonly useOrgMembers: UnwrapRef<typeof import('../../app/composables/useOrgMembers')['useOrgMembers']>
     readonly usePinia: UnwrapRef<typeof import('../../node_modules/.pnpm/@pinia+nuxt@0.11.3_magicast@0.5.2_pinia@3.0.4_typescript@5.9.3_vue@3.5.30_typescript@5.9.3__/node_modules/@pinia/nuxt/dist/runtime/composables')['usePinia']>
     readonly usePreviewMode: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.4.2_@babel+core@7.29.0_@babel+plugin-syntax-jsx@7.28.6_@babel+core@7.29.0__@parc_5a195fceced10ac9fea902dd8b70b305/node_modules/nuxt/dist/app/composables/preview')['usePreviewMode']>
     readonly useRequestEvent: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.4.2_@babel+core@7.29.0_@babel+plugin-syntax-jsx@7.28.6_@babel+core@7.29.0__@parc_5a195fceced10ac9fea902dd8b70b305/node_modules/nuxt/dist/app/composables/ssr')['useRequestEvent']>

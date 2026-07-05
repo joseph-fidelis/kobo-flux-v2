@@ -186,6 +186,7 @@ export function useSubmissionUpload(formUid: MaybeRefOrGetter<string | undefined
 
       await resolveFormMeta(asset, deploymentData)
       await fetchExpectedExportHeaders(id)
+      
     } catch (err: unknown) {
       const apiErr = err as { message?: string }
       error.value = apiErr.message ?? 'Failed to load form export headers'

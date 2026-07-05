@@ -34,6 +34,7 @@ export { defineLazyHydrationComponent } from '#app/composables/lazy-hydration';
 export { useAssetStatus } from '../app/composables/useAssetStatus';
 export { useDashboard, DashboardKpis } from '../app/composables/useDashboard';
 export { useFormatDate } from '../app/composables/useFormatDate';
+export { useOrgMembers, OrgMembersKpis } from '../app/composables/useOrgMembers';
 export { useValidationStatus } from '../app/composables/useValidationStatus';
 export { autocompleteUtil as tw } from '../node_modules/.pnpm/@nuxtjs+tailwindcss@7.0.0-beta.1_magicast@0.5.2_vite@7.3.1_jiti@2.6.1_lightningcss@1.31.1_terser@5.46.0_yaml@2.8.2_/node_modules/@nuxtjs/tailwindcss/dist/runtime/utils';
 export { defineStore, acceptHMRUpdate, usePinia, storeToRefs } from '../node_modules/.pnpm/@pinia+nuxt@0.11.3_magicast@0.5.2_pinia@3.0.4_typescript@5.9.3_vue@3.5.30_typescript@5.9.3__/node_modules/@pinia/nuxt/dist/runtime/composables';
