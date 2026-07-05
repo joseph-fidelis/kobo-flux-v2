@@ -5,7 +5,7 @@ const route = useRoute()
 import type { SidebarProps } from "@/components/ui/sidebar"
 import {
   LayoutDashboard,
-  Users,
+  Settings,
   FormIcon
 } from "lucide-vue-next"
 import {
@@ -31,7 +31,7 @@ const navGroups = [
     items: [
       { title: "Dashboard", url: "/", icon: LayoutDashboard },
       { title: "Forms", url: "/forms", icon: FormIcon },
-      // { title: "Team", url: "/users", icon: Users },
+      { title: "Settings", url: "/settings", icon: Settings },
     ],
   },
 ]

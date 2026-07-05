@@ -1,5 +1,6 @@
 import type { H3Event } from "h3"
 import { createError, getQuery, getRequestHeader, readRawBody, setResponseHeaders } from "h3"
+import { requireKoboCredentials } from "./kobo-credentials"
 
 function isBinaryUpstreamPath(path: string) {
   return /\/xls\/?$/.test(path)
@@ -32,20 +33,12 @@ function normalizeKoboApiPath(path: string) {
  * Keeps the API token on the server so the browser never talks to Kobo directly.
  */
 export async function proxyToKobo(event: H3Event, upstreamPath: string) {
-  const config = useRuntimeConfig()
+  const { token, baseUrl } = requireKoboCredentials(event)
 
-  if (!config.koboApiToken) {
-    throw createError({
-      statusCode: 500,
-      statusMessage: "Kobo API token is not configured (set NUXT_KOBO_API_TOKEN)",
-    })
-  }
-
-  const base = config.koboBaseUrl.replace(/\/$/, "")
   const path = normalizeKoboApiPath(
     upstreamPath.startsWith("/") ? upstreamPath : `/${upstreamPath}`,
   )
-  const target = `${base}${path}`
+  const target = `${baseUrl}${path}`
 
   const method = event.method
   const query = getQuery(event)
@@ -57,7 +50,7 @@ export async function proxyToKobo(event: H3Event, upstreamPath: string) {
 
   const clientAccept = getRequestHeader(event, "accept")
   const headers: Record<string, string> = {
-    Authorization: `Token ${config.koboApiToken}`,
+    Authorization: `Token ${token}`,
     Accept: usesWildcardAccept(path, query) ? "*/*" : clientAccept || "application/json",
   }
 

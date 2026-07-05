@@ -6,6 +6,11 @@ declare module "nitropack/types" {
     '/api/**:path': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/api/[...path]').default>>>>
     }
+    '/api/kobo/settings': {
+      'delete': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/api/kobo/settings.delete').default>>>>
+      'get': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/api/kobo/settings.get').default>>>>
+      'post': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/api/kobo/settings.post').default>>>>
+    }
     '/api/openrosa/:username/submission': {
       'post': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/api/openrosa/[username]/submission.post').default>>>>
     }

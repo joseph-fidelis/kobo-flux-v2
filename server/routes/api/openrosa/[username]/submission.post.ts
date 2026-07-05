@@ -1,4 +1,5 @@
 import { createError, getRouterParam, readBody, setResponseStatus } from "h3"
+import { requireKoboCredentials } from "../../../../utils/kobo-credentials"
 
 interface KoboSubmissionPayload {
   id: string
@@ -12,14 +13,7 @@ interface KoboSubmissionPayload {
  * Always responds with HTTP 200 and { status, data } so batch uploads can handle per-row failures.
  */
 export default defineEventHandler(async (event) => {
-  const config = useRuntimeConfig()
-
-  if (!config.koboApiToken) {
-    throw createError({
-      statusCode: 500,
-      statusMessage: "Kobo API token is not configured (set NUXT_KOBO_API_TOKEN)",
-    })
-  }
+  const { token, baseUrl } = requireKoboCredentials(event)
 
   const username = getRouterParam(event, "username")
   if (!username?.trim()) {
@@ -37,10 +31,9 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const base = config.koboBaseUrl.replace(/\/$/, "")
-  const target = `${base}/${encodeURIComponent(username)}/submission`
+  const target = `${baseUrl}/${encodeURIComponent(username)}/submission`
   const headers = {
-    Authorization: `Token ${config.koboApiToken}`,
+    Authorization: `Token ${token}`,
     Accept: "application/json",
     "Content-Type": "application/json",
   }

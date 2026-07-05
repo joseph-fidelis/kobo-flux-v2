@@ -26,8 +26,10 @@ We aim to acknowledge reports within **5 business days** and provide a timeline 
 
 KoboFlux is designed so that:
 
-- `NUXT_KOBO_API_TOKEN` **is server-only** — configured in Nitro `runtimeConfig`, not exposed via `NUXT_PUBLIC_`*
-- **Browser requests** go to same-origin routes (`/api/`*, `/me/*`), which proxy to Kobo with the server token
+- **`NUXT_KOBO_API_TOKEN` is server-only** when set via environment variables — not exposed via `NUXT_PUBLIC_*`
+- **Settings UI** (`/settings`) stores credentials in **HttpOnly session cookies**; the token is not readable by client JavaScript
+- **Resolution order:** browser cookies override env vars when both token and base URL are present in cookies
+- **Browser requests** go to same-origin routes (`/api/*`, `/me/*`), which proxy to Kobo with the resolved credentials
 - **No end-user authentication** is built into v2 yet — anyone who can reach your deployment uses the configured Kobo token's permissions
 
 

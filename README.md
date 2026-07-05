@@ -12,7 +12,7 @@ A modern, open-source web interface for [KoboToolbox](https://www.kobotoolbox.or
 - **Submissions** — Paginated submission table with validation status and exports (JSON, XML, XLSX)
 - **Bulk upload** — Import rows from an Excel file; headers are validated against Kobo export labels before upload
 - **Team** — Organization members, roles, and pending invites (via `/me` and org APIs)
-- **Secure API proxy** — Your Kobo API token stays on the server; the browser never calls Kobo directly
+- **Secure API proxy** — Kobo API token stays on the server; configure via **Settings** (HttpOnly session cookies) or environment variables
 
 ## Tech stack
 
@@ -68,7 +68,17 @@ cd kobo-flux-v2
 pnpm install
 ```
 
-### 2. Configure environment
+### 2. Configure Kobo credentials
+
+**Option A — Settings UI (no `.env` required)**
+
+```bash
+pnpm dev
+```
+
+Open [http://localhost:3000/settings](http://localhost:3000/settings), enter your Kobo API token and base URL, then **Save & test connection**. Values are stored in **HttpOnly session cookies** for this browser.
+
+**Option B — Environment variables (Docker / server deploy)**
 
 ```bash
 cp .env.example .env
@@ -77,7 +87,7 @@ cp .env.example .env
 Edit `.env`:
 
 ```env
-# Required — create at https://kf.kobotoolbox.org/token/ (or your server equivalent)
+# Optional if using Settings UI — required for Docker unless users configure in browser
 NUXT_KOBO_API_TOKEN=your_token_here
 
 # Kobo host — use kf.kobotoolbox.org (global) or eu.kobotoolbox.org (EU)
@@ -89,6 +99,8 @@ NUXT_PUBLIC_APP_NAME=KoboFlux
 # Leave empty — API calls use same-origin Nitro proxy routes
 NUXT_PUBLIC_BASE_URL=
 ```
+
+Cookie credentials **override** env vars when both are set in the same browser session.
 
 ### 3. Run locally
 
@@ -249,11 +261,13 @@ The `punycode` deprecation line in logs is a harmless Node warning from an actio
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `NUXT_KOBO_API_TOKEN` | Yes | Server-only Kobo API token. Never exposed to the client. |
+| `NUXT_KOBO_API_TOKEN` | No* | Server-only Kobo API token. *Required unless users configure via **Settings** or you rely on cookies only. |
 | `NUXT_KOBO_BASE_URL` | No | Kobo server base URL. Default: `https://kf.kobotoolbox.org` |
 | `NUXT_PUBLIC_APP_NAME` | No | Application name in the UI. Default: `KoboFlux` |
 | `NUXT_PUBLIC_BASE_URL` | No | Optional API base for `useApi`. Leave empty for same-origin proxy. |
 | `KOBOFLUX_PORT` | No | Host port for Docker Compose. Default: `3000` |
+
+**Browser Settings** (alternative to env): open `/settings` to save token and base URL in HttpOnly session cookies. Cookie values take precedence over env when present.
 
 ## Uploading submissions
 
