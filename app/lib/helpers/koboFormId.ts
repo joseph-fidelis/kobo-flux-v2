@@ -3,7 +3,44 @@ import type { Asset, Deployment } from '~/lib/models/ProjectsLibrary'
 import type { KoboV1FormListItem } from '~/lib/models/SurveyData'
 
 export const FORM_ID_RESOLUTION_ERROR =
-  'Could not resolve form id_string. Checked deployment identifiers, form content settings, and v1 forms list. Redeploy the form or verify the asset has settings.id_string in Kobo.'
+  'Could not resolve form id_string. Checked deployment identifiers, form content settings, XForm XML, and v1 forms list. Redeploy the form or verify the asset has settings.id_string in Kobo.'
+
+/** Strip HTML preview wrapper when /xform/ returns syntax-highlighted HTML instead of raw XML. */
+function extractXmlPayload(text: string): string {
+  const trimmed = text.trim()
+  const xmlStart = trimmed.indexOf('<?xml')
+  if (xmlStart >= 0) return trimmed.slice(xmlStart)
+  const htmlRoot = trimmed.match(/<h:html[\s\S]*<\/h:html>/i)
+  if (htmlRoot?.[0]) return htmlRoot[0]
+  return trimmed
+}
+
+/**
+ * Parse id_string from a deployed XForm document.
+ * Kobo primary instance: <instance><root id="id_string">...</root></instance>
+ */
+export function parseFormIdFromXform(xml: string): string | undefined {
+  const body = extractXmlPayload(xml)
+  if (!body) return undefined
+
+  // Primary submission instance (no id on <instance> tag); root child carries id="id_string"
+  const primaryRoot = body.match(
+    /<instance>\s*<([A-Za-z0-9_:-]+)(?:\s[^>]*)?\sid="([^"]+)"/i,
+  )
+  if (primaryRoot?.[2]) return pickFormId(primaryRoot[2])
+  if (primaryRoot?.[1]) return pickFormId(primaryRoot[1])
+
+  // Some forms: id on <instance> itself (skip choice-list instances)
+  const instanceIdMatches = body.matchAll(/<instance\s+id="([^"]+)"/gi)
+  for (const match of instanceIdMatches) {
+    const candidate = match[1]
+    if (!candidate || candidate.endsWith('_list')) continue
+    const parsed = pickFormId(candidate)
+    if (parsed) return parsed
+  }
+
+  return undefined
+}
 
 /** Strip KC/KPI deployment URLs down to the bare id_string used by v1 POST. */
 export function normalizeFormId(raw: string): string | undefined {
@@ -30,7 +67,7 @@ export function formIdFromContentSettings(
 
 function nestedDeploymentAsset(deployment: Deployment | null): Asset | undefined {
   if (!deployment || typeof deployment !== 'object') return undefined
-  const nested = (deployment as Record<string, unknown>).asset
+  const nested = (deployment as unknown as Record<string, unknown>).asset
   if (!nested || typeof nested !== 'object') return undefined
   return nested as Asset
 }
@@ -58,6 +95,7 @@ export function resolveFormIdFromAsset(
 
 export interface ResolveFormIdOptions {
   getAssetContent?: (assetUid: string) => Promise<AssetContent>
+  getAssetXform?: (assetUid: string) => Promise<string>
   getV1Forms?: () => Promise<KoboV1FormListItem[]>
 }
 
@@ -74,6 +112,16 @@ export async function resolveFormIdWithFallbacks(
       const content = await options.getAssetContent(asset.uid)
       const fromContent = formIdFromContentSettings(content.settings)
       if (fromContent) return fromContent
+    } catch {
+      // fall through
+    }
+  }
+
+  if (options.getAssetXform) {
+    try {
+      const xform = await options.getAssetXform(asset.uid)
+      const fromXform = parseFormIdFromXform(xform)
+      if (fromXform) return fromXform
     } catch {
       // fall through
     }

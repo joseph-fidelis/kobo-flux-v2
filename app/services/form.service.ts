@@ -91,6 +91,13 @@ export const useFormContentApi = () => {
         responseType: "text",
       }),
 
+    /** XForm XML via the asset .xml endpoint (raw XML; preferred for id_string parsing). */
+    getAssetXml: (assetUid: string) =>
+      api.get<string>(`${ASSET_BASE}/${assetUid}.xml`, {
+        headers: { Accept: "*/*" },
+        responseType: "text",
+      }),
+
     /** XLSForm as an Excel (.xlsx) file download. */
     getAssetXls: (assetUid: string) =>
       api.get<Blob>(`${ASSET_BASE}/${assetUid}/xls/`, {

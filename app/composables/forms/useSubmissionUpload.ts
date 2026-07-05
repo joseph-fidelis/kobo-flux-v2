@@ -54,7 +54,7 @@ function responseMessage(data: unknown): string {
 export function useSubmissionUpload(formUid: MaybeRefOrGetter<string | undefined>) {
   const uid = computed(() => toValue(formUid))
   const { getAsset, getDeployment } = useProjectsLibraryApi()
-  const { getAssetContent } = useFormContentApi()
+  const { getAssetContent, getAssetXml, getAssetXform } = useFormContentApi()
   const submissionApi = useSubmissionApi()
   const { submitSubmission, getV1Forms } = submissionApi
 
@@ -124,6 +124,13 @@ export function useSubmissionUpload(formUid: MaybeRefOrGetter<string | undefined
   async function resolveFormMeta(asset: Asset, deploymentData: Deployment | null) {
     const formId = await resolveFormIdWithFallbacks(asset, deploymentData, {
       getAssetContent,
+      getAssetXform: async (assetUid) => {
+        try {
+          return await getAssetXml(assetUid)
+        } catch {
+          return getAssetXform(assetUid)
+        }
+      },
       getV1Forms,
     })
     if (!formId) {
