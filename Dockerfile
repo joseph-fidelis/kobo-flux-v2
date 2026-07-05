@@ -1,23 +1,16 @@
-# syntax=docker/dockerfile:1
-
 FROM node:22-alpine AS base
-RUN corepack enable
+RUN corepack enable \
+  && corepack prepare pnpm@10.24.0 --activate
 WORKDIR /app
 
-# Install dependencies (including devDependencies for the build)
-FROM base AS deps
+FROM base AS builder
 COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
-
-# Build the Nuxt / Nitro application
-FROM base AS build
-COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NODE_ENV=production
 RUN pnpm build
 
-# Production image — only the Nitro server output is required
-FROM base AS runner
+FROM node:22-alpine AS runner
 ENV NODE_ENV=production
 ENV HOST=0.0.0.0
 ENV PORT=3000
@@ -25,7 +18,8 @@ ENV PORT=3000
 RUN addgroup --system --gid 1001 nodejs \
   && adduser --system --uid 1001 --ingroup nodejs nuxtjs
 
-COPY --from=build --chown=nuxtjs:nodejs /app/.output ./.output
+WORKDIR /app
+COPY --from=builder --chown=nuxtjs:nodejs /app/.output ./.output
 
 USER nuxtjs
 EXPOSE 3000

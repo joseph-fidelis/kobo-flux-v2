@@ -1,0 +1,37 @@
+services:
+  kobo-flux:
+    image: josephfidelis/koboflux-v2:latest
+    container_name: koboflux-v2
+    restart: unless-stopped
+    ports:
+      - "${KOBOFLUX_PORT:-3000}:3000"
+    env_file:
+      - path: .env
+        required: true
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 3000
+      NUXT_KOBO_API_TOKEN: ${NUXT_KOBO_API_TOKEN}
+      NUXT_KOBO_BASE_URL: ${NUXT_KOBO_BASE_URL:-https://kf.kobotoolbox.org}
+      NUXT_PUBLIC_APP_NAME: ${NUXT_PUBLIC_APP_NAME:-KoboFlux}
+      NUXT_PUBLIC_BASE_URL: ${NUXT_PUBLIC_BASE_URL:-}
+    volumes:
+      - kobo_flux_data:/data
+      - ./.env:/config/.env:ro
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:3000').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  kobo_flux_data:
+    driver: local
