@@ -5,10 +5,11 @@ WORKDIR /app
 
 FROM base AS builder
 COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
+# Skip postinstall (nuxt prepare) until app source is copied — otherwise .nuxt is stale
+RUN pnpm install --frozen-lockfile --ignore-scripts
 COPY . .
 ENV NODE_ENV=production
-RUN pnpm build
+RUN pnpm exec nuxt prepare && pnpm build
 
 FROM node:22-alpine AS runner
 ENV NODE_ENV=production
