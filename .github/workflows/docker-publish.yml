@@ -21,6 +21,25 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Verify Docker Hub secrets
+        run: |
+          if [ -z "${{ secrets.DOCKERHUB_USERNAME }}" ] || [ -z "${{ secrets.DOCKERHUB_TOKEN }}" ]; then
+            echo "::error::Missing GitHub Actions secrets."
+            echo "Add DOCKERHUB_USERNAME and DOCKERHUB_TOKEN under:"
+            echo "  Repository → Settings → Secrets and variables → Actions → New repository secret"
+            echo ""
+            echo "  DOCKERHUB_USERNAME = your Docker Hub username (e.g. josephfidelis)"
+            echo "  DOCKERHUB_TOKEN    = Docker Hub access token (not your account password)"
+            echo ""
+            echo "Create a token at: https://hub.docker.com/settings/security"
+            exit 1
+          fi
+
       - name: Read package version
         id: meta
         run: |

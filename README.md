@@ -229,6 +229,22 @@ Every push to `main` publishes to Docker Hub:
 
 GitHub Actions secrets required: `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`. See [`.github/workflows/docker-publish.yml`](./.github/workflows/docker-publish.yml).
 
+**One-time setup (fixes `Username and password required`):**
+
+1. Create repository **`josephfidelis/koboflux-v2`** on [Docker Hub](https://hub.docker.com/) (if it does not exist).
+2. Create an access token: [Docker Hub → Account Settings → Security → New Access Token](https://hub.docker.com/settings/security)  
+   - Scope: **Read, Write** (or Read & Write) so CI can push images.
+3. In your **GitHub repo** → **Settings** → **Secrets and variables** → **Actions** → **New repository secret**:
+
+   | Name | Value |
+   |------|--------|
+   | `DOCKERHUB_USERNAME` | `josephfidelis` (exact Docker Hub username) |
+   | `DOCKERHUB_TOKEN` | The token from step 2 (`dckr_pat_…`) — **not** your Docker Hub password |
+
+4. Re-run the failed workflow (Actions → failed run → **Re-run jobs**).
+
+The `punycode` deprecation line in logs is a harmless Node warning from an action dependency; it is not the cause of the login failure.
+
 ## Environment variables
 
 | Variable | Required | Description |
