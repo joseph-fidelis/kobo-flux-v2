@@ -83,6 +83,7 @@ export interface Asset {
   settings?: Record<string, unknown>
   deployment__active?: boolean
   deployment__identifier?: string
+  deployment__uuid?: string
   deployment__submission_count?: number
   deployment_status?: AssetDeploymentStatus
   /** Enketo collection URLs when deployed (Kobo API field name uses double underscores). */

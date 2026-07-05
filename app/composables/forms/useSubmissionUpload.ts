@@ -10,6 +10,10 @@ import {
   sleep,
 } from '~/lib/helpers/koboExport'
 import { fetchKoboExportHeaders } from '~/lib/helpers/koboExportJob'
+import {
+  FORM_ID_RESOLUTION_ERROR,
+  resolveFormIdWithFallbacks,
+} from '~/lib/helpers/koboFormId'
 import { triggerBrowserDownload } from '~/lib/helpers/download'
 import {
   buildLabelToXpathMap,
@@ -19,6 +23,7 @@ import {
   type HeaderValidation,
 } from '~/lib/helpers/submissionUpload'
 import { buildXlsxBlob, parseXlsxFile } from '~/lib/helpers/xlsx'
+import { useFormContentApi } from '~/services/form.service'
 import { useProjectsLibraryApi } from '~/services/project.service'
 import { useSubmissionApi } from '~/services/survey.service'
 
@@ -26,19 +31,11 @@ const PREVIEW_ROW_LIMIT = 10
 const UPLOAD_DELAY_MS = 100
 
 function extractFormhubUuid(asset: Asset): string | undefined {
-  const candidates = ['uuid', 'formhub_uuid', 'kuid'] as const
+  const candidates = ['uuid', 'formhub_uuid', 'kuid', 'deployment__uuid'] as const
   for (const key of candidates) {
     const value = asset[key]
     if (typeof value === 'string' && value.trim()) return value.trim()
   }
-  return undefined
-}
-
-function resolveFormId(asset: Asset, deployment: Deployment | null): string | undefined {
-  const fromAsset = asset.deployment__identifier
-  if (typeof fromAsset === 'string' && fromAsset.trim()) return fromAsset.trim()
-  const fromDeployment = deployment?.identifier
-  if (typeof fromDeployment === 'string' && fromDeployment.trim()) return fromDeployment.trim()
   return undefined
 }
 
@@ -57,6 +54,7 @@ function responseMessage(data: unknown): string {
 export function useSubmissionUpload(formUid: MaybeRefOrGetter<string | undefined>) {
   const uid = computed(() => toValue(formUid))
   const { getAsset, getDeployment } = useProjectsLibraryApi()
+  const { getAssetContent } = useFormContentApi()
   const submissionApi = useSubmissionApi()
   const { submitSubmission, getV1Forms } = submissionApi
 
@@ -110,17 +108,26 @@ export function useSubmissionUpload(formUid: MaybeRefOrGetter<string | undefined
 
     try {
       const forms = await getV1Forms()
-      const match = forms.find((item) => item.id_string === formId)
-      return match?.uuid
+      const byIdString = forms.find((item) => item.id_string === formId)
+      if (byIdString?.uuid) return byIdString.uuid
+
+      const deploymentUuid = asset.deployment__uuid
+      if (typeof deploymentUuid === 'string' && deploymentUuid.trim()) {
+        const byUuid = forms.find((item) => item.uuid === deploymentUuid)
+        return byUuid?.uuid
+      }
     } catch {
       return undefined
     }
   }
 
   async function resolveFormMeta(asset: Asset, deploymentData: Deployment | null) {
-    const formId = resolveFormId(asset, deploymentData)
+    const formId = await resolveFormIdWithFallbacks(asset, deploymentData, {
+      getAssetContent,
+      getV1Forms,
+    })
     if (!formId) {
-      throw new Error('Could not resolve form id_string from deployment')
+      throw new Error(FORM_ID_RESOLUTION_ERROR)
     }
 
     const formhubUuid = await resolveFormhubUuid(formId, asset)

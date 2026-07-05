@@ -102,26 +102,72 @@
 
         <Alert v-if="validation && !validation.valid" variant="destructive">
           <AlertTitle>Header mismatch</AlertTitle>
-          <AlertDescription class="flex flex-col gap-3">
-            <p>Your file does not match the expected Kobo export columns.</p>
-            <div v-if="validation.missing.length > 0">
-              <p class="font-medium">Missing columns:</p>
-              <ul class="list-inside list-disc text-sm">
-                <li v-for="col in validation.missing" :key="col">{{ col }}</li>
-              </ul>
+          <AlertDescription class="flex flex-col gap-4">
+            <p class="text-sm leading-relaxed">
+              Your file's column headers must exactly match this form's Kobo export labels
+              (question fields only — system columns such as <code class="text-xs">_id</code> are
+              ignored). A column that is missing or spelled differently will block upload; extra
+              columns that are not in the export are not allowed. Download the template above, or
+              fix the headers below and re-select your file.
+            </p>
+
+            <div class="overflow-hidden rounded-md border border-border bg-background">
+              <Table>
+                <TableHeader>
+                  <TableRow class="hover:bg-transparent">
+                    <TableHead class="w-[55%]">Column</TableHead>
+                    <TableHead>Status</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow
+                    v-for="col in validation.expectedData"
+                    :key="`expected-${col}`"
+                    class="border-l-2 border-l-green-600 bg-green-500/10 hover:bg-green-500/15"
+                  >
+                    <TableCell class="font-mono text-xs font-medium text-green-800 dark:text-green-300">
+                      {{ col }}
+                    </TableCell>
+                    <TableCell class="text-sm text-green-800 dark:text-green-300">
+                      <span v-if="!validation.missing.includes(col)">Expected · in file</span>
+                      <span v-else class="font-medium">Expected · missing from file</span>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow
+                    v-for="col in validation.extra"
+                    :key="`extra-${col}`"
+                    class="border-l-2 border-l-destructive bg-destructive/10 hover:bg-destructive/15"
+                  >
+                    <TableCell class="font-mono text-xs font-medium text-destructive">
+                      {{ col }}
+                    </TableCell>
+                    <TableCell class="text-sm font-medium text-destructive">
+                      Unexpected · not in export
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
             </div>
-            <div v-if="validation.extra.length > 0">
-              <p class="font-medium">Unexpected columns:</p>
-              <ul class="list-inside list-disc text-sm">
-                <li v-for="col in validation.extra" :key="col">{{ col }}</li>
-              </ul>
-            </div>
-            <div>
-              <p class="font-medium">Expected columns (Kobo export labels):</p>
-              <p class="mt-1 font-mono text-xs leading-relaxed">
-                {{ validation.expectedData.join(' · ') }}
-              </p>
-            </div>
+
+            <p
+              v-if="validation.missing.length === 0 && validation.extra.length > 0"
+              class="text-xs text-muted-foreground"
+            >
+              Remove or rename the unexpected columns, or export a fresh template from Kobo and
+              copy your values into it.
+            </p>
+            <p
+              v-else-if="validation.missing.length > 0 && validation.extra.length === 0"
+              class="text-xs text-muted-foreground"
+            >
+              Add the missing columns to your spreadsheet header row, matching the labels exactly.
+            </p>
+            <p
+              v-else-if="validation.missing.length > 0 && validation.extra.length > 0"
+              class="text-xs text-muted-foreground"
+            >
+              Add the missing expected columns and remove the unexpected ones before uploading.
+            </p>
           </AlertDescription>
         </Alert>
 
